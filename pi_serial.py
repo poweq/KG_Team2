@@ -1,12 +1,14 @@
 import serial
-import time
 
-# 시리얼 포트 설정
-ser = serial.Serial('/dev/ttyS0', 9600)  # /dev/ttyS0  GPIO 14 (TXD)와 GPIO 15 (RXD) 
-time.sleep(2)  # 잠시 대기하여 연결을 안정화합니다.
+# 시리얼 포트 설정 (예: '/dev/ttyAMA3')
+ser = serial.Serial('/dev/ttyAMA3', 115200, timeout=1)  # 포트와 보드레이트 설정
 
-while True:
-    if ser.in_waiting > 0:
-        data = ser.readline().decode('utf-8').rstrip()
-        print("Received:", data)
-        ser.write(b'Hello from Raspberry Pi\n')
+try:
+    while True:
+        if ser.in_waiting > 0:  # 데이터가 대기 중인지 확인
+            data = ser.readline().decode('utf-8').rstrip()  # 데이터 읽기
+            print("Received:", data)  # 수신한 데이터 출력
+except KeyboardInterrupt:
+    print("Program interrupted by user.")
+finally:
+    ser.close()  # 프로그램 종료 시 시리얼 포트 닫기
