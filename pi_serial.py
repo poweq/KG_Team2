@@ -12,8 +12,6 @@ def main():
                     data = ser.readline().decode('ascii').rstrip()  # ASCII로 데이터 디코딩
                     if data:  # 데이터가 비어있지 않을 때만 출력
                         print("Received:", data)  # 수신한 데이터 출력
-                else:
-                    print("No data available.")
             except serial.SerialException as e:
                 print(f"Serial exception: {e}")
                 break
