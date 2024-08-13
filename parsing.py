@@ -3,7 +3,7 @@ import threading
 import time
 
 class JDamr(object):
-    def __init__(self, com="COM7"):
+    def __init__(self, com="/dev/ttyAMA2"):
         self.ser = serial.Serial(com, 115200)
         if self.ser.isOpen():
             print("JDamr serial port opened!")
@@ -47,7 +47,7 @@ class JDamr(object):
             print(f"Error sending data: {e}")
 
 if __name__ == '__main__':
-    com = 'COM7'
+    com = '/dev/ttyAMA2'
     bot = JDamr(com)
     time.sleep(1)
     bot.receive_thread()
