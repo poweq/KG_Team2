@@ -16,6 +16,7 @@ labels_map = {0: 'Argentina_flag', 1: 'china_flag', 2: 'japan_flag', 3: 'korea_f
 # 스레드 락 설정
 lock = threading.Lock()
 
+
 # 시리얼 데이터 전송 스레드 함수
 def serial_thread():
     global label_to_send
