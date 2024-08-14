@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 import tensorflow as tf
 
+
+
 # TensorFlow 모델 로드
 model = tf.keras.models.load_model('mini_vgg_flag.h5')
 
@@ -35,6 +37,8 @@ while True:
     predictions = model.predict(preprocessed_image)
     class_index = np.argmax(predictions[0])
     confidence = predictions[0][class_index]
+
+
 
     # 결과 출력
     print(f"Detected: {class_labels[class_index]} with confidence {confidence:.2f}")
