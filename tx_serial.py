@@ -4,8 +4,8 @@ import time
 
 class uart_class(object):
     try:
-        #def __init__(self,com = "/dev/ttyAMA2"):
-        def __init__(self,com = "COM7"):
+        def __init__(self,com = "/dev/ttyAMA2"):
+        #def __init__(self,com = "COM7"):
             self.ser_init=serial.Serial(com,115200,timeout=2)
             #포트 연결 확인
             if self.ser_init.isOpen():
@@ -53,8 +53,8 @@ class uart_class(object):
 
 
 if __name__ == "__main__":
-    #com = "/dev/ttyAMA2":
-    com = 'COM7'
+    com = "/dev/ttyAMA2"
+    #com = 'COM7'
     bot = uart_class(com)
     time.sleep(1)
     #Thread 시작
