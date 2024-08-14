@@ -57,6 +57,7 @@ UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
 
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -66,6 +67,7 @@ static void MX_TIM4_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_RNG_Init(void);
 /* USER CODE BEGIN PFP */
+uint8_t rx_data;
 
 /* USER CODE END PFP */
 
@@ -88,10 +90,45 @@ uint8_t Generate_Random_Number(void)
     }
 }
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-    if (huart->Instance == USART2) {
-        uint8_t rx_data;
+	//rx_data = 0;
+
+	if (huart->Instance == USART2) {
         HAL_UART_Receive_IT(&huart2, &rx_data, 1);
-        if (rx_data == 'a') {
+
+        if(rx_data == '0')
+        {
+        	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12,GPIO_PIN_SET);
+        	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13,GPIO_PIN_RESET);
+        	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14,GPIO_PIN_RESET);
+        	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15,GPIO_PIN_RESET);
+        }
+        else if(rx_data == '1')
+        {
+
+        	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12,GPIO_PIN_RESET);
+        	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13,GPIO_PIN_SET);
+        	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14,GPIO_PIN_RESET);
+        	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15,GPIO_PIN_RESET);
+        }
+        else if(rx_data == '2')
+        {
+
+        	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12,GPIO_PIN_RESET);
+        	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13,GPIO_PIN_RESET);
+        	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14,GPIO_PIN_SET);
+        	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15,GPIO_PIN_RESET);
+        }
+        else if(rx_data == '3')
+        {
+        	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12,GPIO_PIN_RESET);
+        	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13,GPIO_PIN_RESET);
+        	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14,GPIO_PIN_RESET);
+        	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15,GPIO_PIN_SET);
+        }
+
+
+        /*
+         if (rx_data == 'a') {
             HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_15);
             key_led=! key_led;
         }
@@ -99,6 +136,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
             HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_15);
             key_led=! key_led;
         }
+        */
+
     }
 }
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
@@ -117,10 +156,10 @@ uint8_t random_led()
 
 	switch(random_led){
 		case 0:
-			  HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_13);
+//			  HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_13);
 
 		case 1:
-			  HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_14);
+//			  HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_14);
 
 	}
 
@@ -195,8 +234,11 @@ int main(void)
 		  buffer_array[8]= (encorder1>>8)&0xff;
 		  buffer_array[9]= (encorder1)&0xff;//
 
-		  HAL_UART_Transmit_IT(&huart2,(uint8_t*) buffer_array,10);
-		  HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
+//		  HAL_UART_Transmit_IT(&huart2,(uint8_t*) buffer_array,10);
+//		  HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
+
+
+
 	  }
     /* USER CODE END WHILE */
 
