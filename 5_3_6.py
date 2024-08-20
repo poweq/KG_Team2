@@ -8,12 +8,11 @@ def main():
 
     while(camera.isOpened()):
         ret, frame = camera.read()
-        frame = cv2.flip(frame, -1)
         cv2.imshow('normal', frame)
 
         crop_img = frame[60:120, 0 : 160]
 
-        gray = cv2.cvtColor(crop_img, cv2.COLOR_BAYER_BG2GRAY)
+        gray = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
 
         blur = cv2.GaussianBlur(gray,(5, 5), 0)
 
@@ -21,12 +20,12 @@ def main():
 
         mask = cv2.erode(thresh1, None, iterations=2)
         mask = cv2.dilate(mask, None, iterations=2)
-        cv2.imsho2('imshow', mask)
+        cv2.imshow('imshow', mask)
 
         contours,hierarchy = cv2.findContours(mask.copy(), 1, cv2.CHAIN_APPROX_NONE)
 
         if len(contours) > 0:
-            c = max(contours, key = cv2.countourArea)
+            c = max(contours, key = cv2.contourArea)
             M = cv2.moments(c)
 
             cx = int(M['m10'] / M['m00'])
