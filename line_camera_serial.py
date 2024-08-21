@@ -4,6 +4,7 @@ import threading
 import time
 
 class UartCommunication:
+    #def __init__(self,com = "/dev/ttyAMA2", baud_rate=115200):
     def __init__(self, com_port="COM7", baud_rate=115200):
         try:
             self.ser = serial.Serial(com_port, baud_rate, timeout=2)
@@ -71,11 +72,11 @@ def process_camera_and_send_data(uart_comm):
             if M['m00'] != 0:
                 cx = int(M['m10'] / M['m00'])
                 if 95 <= cx <= 125:
-                    command = "LEFT"
+                    command = "L"
                 elif 39 <= cx <= 65:
-                    command = "RIGHT"
+                    command = "R"
                 else:
-                    command = "GO"
+                    command = "G"
 
                 print(f"Sending command: {command}")
                 uart_comm.send_data(command)
@@ -87,6 +88,7 @@ def process_camera_and_send_data(uart_comm):
     cv2.destroyAllWindows()
 
 if __name__ == '__main__':
+    #uart_comm = UartCommunication(com_port="/dev/ttyAMA2", baud_rate=115200)
     uart_comm = UartCommunication(com_port="COM7", baud_rate=115200)
     uart_comm.start_receive_thread()
 
