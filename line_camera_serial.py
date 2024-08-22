@@ -78,7 +78,7 @@ def process_camera_and_send_data(uart_comm):
                 else:
                     command = "G"
 
-                #print(f"Sending command: {command}")
+                print(f"Sending command: {command}")
                 uart_comm.send_data(command)
         
         if cv2.waitKey(1) == ord('q'):
