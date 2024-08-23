@@ -1,25 +1,22 @@
 from flask import Flask, Response
 import cv2
+import threading
 
 app = Flask(__name__)
 
+# 비디오 캡처 객체를 전역 변수로 선언
+cap = cv2.VideoCapture(0)
+
 def generate_frames():
-    cap = cv2.VideoCapture(0)  # 0은 기본 웹캠을 의미합니다.
     while True:
         success, frame = cap.read()
         if not success:
-            print('not opend camera')
             break
         else:
-            # 비디오 프레임을 JPEG 형식으로 인코딩
             ret, buffer = cv2.imencode('.jpg', frame)
             frame = buffer.tobytes()
-            
-            # 프레임을 HTTP 응답 형식으로 전송
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-    
-    cap.release()
 
 @app.route('/video_feed')
 def video_feed():
@@ -38,5 +35,5 @@ def index():
     '''
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, threaded=True)
 
