@@ -4,7 +4,11 @@ import time
 
 class uart_class(object):
     try:
-        def __init__(self,com = "/dev/ttyAMA2"):
+        #ubuntu os
+        def __init__(self,com = "/dev/ttyAMA1"):
+        #pi os
+        #def __init__(self,com = "/dev/ttyAMA2"):
+        #pc
         #def __init__(self,com = "COM7"):
             self.ser_init=serial.Serial(com,115200,timeout=2)
             #포트 연결 확인
@@ -35,7 +39,7 @@ class uart_class(object):
             
     def send_data(self, data):
         try : 
-            self.ser_init.write(data.encode('ascii'))
+            self.ser_init.write(data.encode())
         #하드웨어 에러 발생시
         except Exception as e :
             print(f"Error sending data: {e}")
@@ -53,7 +57,11 @@ class uart_class(object):
 
 
 if __name__ == "__main__":
-    com = "/dev/ttyAMA2"
+    #ubuntu os
+    com = "/dev/ttyAMA1"
+    #pi os
+    #com = "/dev/ttyAMA2"
+    #pc
     #com = 'COM7'
     bot = uart_class(com)
     time.sleep(1)
