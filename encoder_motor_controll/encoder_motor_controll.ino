@@ -1,6 +1,6 @@
 #include <Encoder.h>
 
-// 엔코더 정의
+// 엔코더 정의 (핀 번호는 기존 핀을 유지)
 Encoder encoderA(18, 31);
 Encoder encoderB(19, 38);
 Encoder encoderC(3, 49);
@@ -28,6 +28,16 @@ int motorAValue = 0;
 int motorBValue = 0;
 int motorCValue = 0;
 int motorDValue = 0;
+
+// 엔코더 위치 저장
+long encoderAPosition = 0;
+long encoderBPosition = 0;
+long encoderCPosition = 0;
+long encoderDPosition = 0;
+
+// 타이머 변수
+unsigned long previousMillis = 0;
+const long interval = 1000;  // 1초
 
 void setup() {
   Serial.begin(9600);  
@@ -65,34 +75,72 @@ void loop() {
     handleCommand(command);
   }
 
-  delay(100);
+  // 엔코더 값을 읽기
+  encoderAPosition = encoderA.read();
+  encoderBPosition = encoderB.read();
+  encoderCPosition = encoderC.read();
+  encoderDPosition = encoderD.read();
+
+  // 현재 시간 가져오기
+  unsigned long currentMillis = millis();
+  
+  // 1초마다 엔코더 값을 0으로 초기화
+  if (currentMillis - previousMillis >= interval) {
+    previousMillis = currentMillis;
+    encoderA.write(0);
+    encoderB.write(0);
+    encoderC.write(0);
+    encoderD.write(0);
+  }
+
+  // 각 모터별 엔코더 값 출력 (시리얼 플로터용)
+// 각 모터별 엔코더 값 출력 (디버깅용)
+Serial.print("A:");
+Serial.print(abs(encoderAPosition));  // 절대값으로 출력
+Serial.print(" B:");
+Serial.print(abs(encoderBPosition));  // 절대값으로 출력
+Serial.print(" C:");
+Serial.print(abs(encoderCPosition));  // 절대값으로 출력
+Serial.print(" D:");
+Serial.println(abs(encoderDPosition)); // 절대값으로 출력
+
+  delay(10);
 }
 
 void handleCommand(String command) {
-  Serial.print("받은 명령: ");
-  Serial.println(command); // 받은 명령어 시리얼 모니터에 출력
+    Serial.print("받은 명령: ");
+    Serial.println(command); // 받은 명령어 시리얼 모니터에 출력
 
-  // 각 모터의 새로운 PWM 값을 설정
-  updateMotorValue(command, 'a', motorAValue);
-  updateMotorValue(command, 'b', motorBValue);
-  updateMotorValue(command, 'c', motorCValue);
-  updateMotorValue(command, 'd', motorDValue);
+    // W: 명령어 처리
+    if (command.startsWith("W:")) {
+        int value = command.substring(2).toInt();  // W: 뒤의 값을 정수로 변환
+        motorAValue = value;
+        motorBValue = value;
+        motorCValue = value;
+        motorDValue = value;
+    } else {
+        // 각 모터의 새로운 PWM 값을 설정
+        updateMotorValue(command, 'a', motorAValue);
+        updateMotorValue(command, 'b', motorBValue);
+        updateMotorValue(command, 'c', motorCValue);
+        updateMotorValue(command, 'd', motorDValue);
+    }
 
-  // 모터의 방향 및 PWM 값 설정
-  setMotorDirectionAndPWM('a', motorAValue);
-  setMotorDirectionAndPWM('b', motorBValue);
-  setMotorDirectionAndPWM('c', motorCValue);
-  setMotorDirectionAndPWM('d', motorDValue);
+    // 모터의 방향 및 PWM 값 설정
+    setMotorDirectionAndPWM('a', motorAValue);
+    setMotorDirectionAndPWM('b', motorBValue);
+    setMotorDirectionAndPWM('c', motorCValue);
+    setMotorDirectionAndPWM('d', motorDValue);
 
-  // 출력값을 시리얼 0번으로 출력
-  Serial.print("모터 출력: a:");
-  Serial.print(motorAValue);
-  Serial.print(" b:");
-  Serial.print(motorBValue);
-  Serial.print(" c:");
-  Serial.print(motorCValue);
-  Serial.print(" d:");
-  Serial.println(motorDValue);
+    // 출력값을 시리얼 0번으로 출력
+    Serial.print("모터 출력: a:");
+    Serial.print(motorAValue);
+    Serial.print(" b:");
+    Serial.print(motorBValue);
+    Serial.print(" c:");
+    Serial.print(motorCValue);
+    Serial.print(" d:");
+    Serial.println(motorDValue);
 }
 
 void updateMotorValue(String command, char motor, int &motorValue) {
