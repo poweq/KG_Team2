@@ -3,7 +3,7 @@ import websockets
 import cv2
 import numpy as np
 import os
-from jd_opencv_lane_detect import JdOpencvLaneDetect
+from line_detect.jd_opencv_lane_detect import JdOpencvLaneDetect
 
 # OpenCV line detector object
 cv_detector = JdOpencvLaneDetect()

@@ -1,6 +1,6 @@
 import cv2
 import os
-from jd_opencv_lane_detect import JdOpencvLaneDetect
+from line_detect.jd_opencv_lane_detect import JdOpencvLaneDetect
 # from jd_car_motor_l9110 import JdCarMotorL9110  # GPIO 모듈이 필요한 코드 주석 처리
 
 # 모터 제어 함수 예제 (구현에 따라 수정 필요)

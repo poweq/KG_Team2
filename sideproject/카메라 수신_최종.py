@@ -3,7 +3,7 @@ import os
 import numpy as np
 import asyncio
 import websockets
-from jd_opencv_lane_detect import JdOpencvLaneDetect
+from line_detect.jd_opencv_lane_detect import JdOpencvLaneDetect
 
 cv_detector = JdOpencvLaneDetect()
 
