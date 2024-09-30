@@ -1,50 +1,105 @@
 import cv2
 import os
-import time
-import paramiko  # pip install paramiko
+import serial
+from jd_opencv_lane_detect import JdOpencvLaneDetect
 
-# SSH ¿¬°á Á¤º¸
-hostname = "172.30.1.61"  # Windows PCÀÇ IP ÁÖ¼Ò
-username = "sally"  # Windows »ç¿ëÀÚ ÀÌ¸§
-password = "tlgus6368!"  # Windows »ç¿ëÀÚ ºñ¹Ð¹øÈ£
-remote_path = "C:\\Users\\sally\\Desktop\\sidepj\\checkboardimg"  # Windows¿¡¼­ ÆÄÀÏÀ» ÀúÀåÇÒ °æ·Î
+# Serial communication setup
+ser = serial.Serial('/dev/ttyAMA1', 9600, timeout=1)
 
-# USB Ä«¸Þ¶ó ÃÊ±âÈ­
+# OpenCV line detector setup
+cv_detector = JdOpencvLaneDetect()
+
+# Open camera
 cap = cv2.VideoCapture(0)
+cap.set(3, 320)  # Set width
+cap.set(4, 240)  # Set height
 
-# ÀúÀåÇÒ ÀÌ¹ÌÁö ÆÄÀÏ °æ·Î
-image_folder = './images'
-if not os.path.exists(image_folder):
-    os.makedirs(image_folder)
+# Create directory for saving video if it doesn't exist
+try:
+    if not os.path.exists('./data'):
+        os.makedirs('./data')
+except OSError:
+    print("failed to make ./data folder")
 
-# SSH ¿¬°á ¼³Á¤
-def upload_image(image_path):
-    try:
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(hostname, username=username, password=password)
-        
-        sftp = ssh.open_sftp()
-        sftp.put(image_path, os.path.join(remote_path, os.path.basename(image_path)))
-        sftp.close()
-        ssh.close()
-        print(f"Uploaded {image_path} to {remote_path}")
-    except Exception as e:
-        print(f"Failed to upload {image_path}: {e}")
+# Setup video writer
+fourcc = cv2.VideoWriter_fourcc(*'XVID')
+video_orig = cv2.VideoWriter('./data/car_video.avi', fourcc, 20.0, (320, 240))
 
-# »çÁø Âï±â ¹× ¾÷·Îµå
-for i in range(10):
-    ret, frame = cap.read()
+# Initial frame capture
+for i in range(30):
+    ret, img_org = cap.read()
     if ret:
-        image_path = os.path.join(image_folder, f'image_{i}.jpg')
-        cv2.imwrite(image_path, frame)
-        print(f"Captured {image_path}")
+        lanes, img_lane = cv_detector.get_lane(img_org)
+        angle, img_angle = cv_detector.get_steering_angle(img_lane, lanes)
+        if img_angle is None:
+            print("can't find lane...")
+            pass
+        else:
+            print(angle)
+    else:
+        print("camera error")
 
-        # ÀÌ¹ÌÁö ¾÷·Îµå
-        upload_image(image_path)
+# Function to calculate motor values based on angle
+def calculate_motor_values(angle):
+    # Base speed for motors
+    base_speed = 110
 
-    time.sleep(5)  # 5ÃÊ ´ë±â
+# Function to calculate motor values based on angle
+def calculate_motor_values(angle):
+    # Base speed for motors
+    base_speed = 110
 
-# ÀÚ¿ø ÇØÁ¦
+    # Initialize motor speeds
+    motorA = motorB = motorC = motorD = base_speed
+
+    if angle < 86:
+        # Turn left: reduce speed of motors on the left side and increase speed on the right side
+        motorA = base_speed - (86 - angle)  # Slow down left front motor
+        motorB = base_speed - (86 - angle)  # Slow down left back motor
+        motorC = base_speed + (86 - angle)   # Speed up right front motor
+        motorD = base_speed + (86 - angle)   # Speed up right back motor
+    elif angle > 94:
+        # Turn right: reduce speed of motors on the right side and increase speed on the left side
+        motorC = base_speed - (angle - 94)  # Slow down right front motor
+        motorD = base_speed - (angle - 94)  # Slow down right back motor
+        motorA = base_speed + (angle - 94)  # Speed up left front motor
+        motorB = base_speed + (angle - 94)  # Speed up left back motor
+
+    return motorA, motorB, motorC, motorD
+
+# Main loop
+while True:
+    ret, img_org = cap.read()
+    if ret:
+        # Save the frame to video
+        video_orig.write(img_org)
+
+        # Process the frame
+        lanes, img_lane = cv_detector.get_lane(img_org)
+        angle, img_angle = cv_detector.get_steering_angle(img_lane, lanes)
+        if img_angle is None:
+            print("can't find lane...")
+            pass
+        else:
+            cv2.imshow('lane', img_angle)
+            print(f"Detected angle: {angle}")
+
+            # Calculate motor values based on the angle
+            motorA, motorB, motorC, motorD = calculate_motor_values(angle)
+
+            # Send motor values via serial
+            motor_command = f'a:{motorA} b:{motorB} c:{motorC} d:{motorD}\n'
+            ser.write(motor_command.encode())
+            print(f"Sending motor command: {motor_command}")
+
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+    else:
+        print("cap error")
+
+# Release resources
 cap.release()
+video_orig.release()
 cv2.destroyAllWindows()
+ser.close()
+

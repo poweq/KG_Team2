@@ -1,0 +1,134 @@
+<robot name="jdamr">
+    <!-- ?????? ???? -->
+    <link name="body_link">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0"/> <!-- rpy: roll pitch yaw origin: origin point-->
+            <geometry>
+                <box size="1 0.6 0.3"/>  <!-- ???? ???? -->
+            </geometry>
+            <material name="red">
+                <color rgba="1 0 0 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <!-- ?? ???? ???? (???? ??) -->
+    <joint name="wheel1_joint" type="continuous">
+        <parent link="body_link"/>
+        <child link="wheel1_link"/>
+        <origin xyz="-0.3 -0.35 -0.1" rpy="0 0 0"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+    <link name="wheel1_link">
+        <visual>
+            <origin rpy="1.570795 0 0" xyz="0 0 0"/>
+            <geometry>
+                <cylinder length="0.1" radius="0.15"/>
+            </geometry>
+            <material name="yellow">
+                <color rgba="1 1 0 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <!-- ?? ???? ???? (?????? ??) -->
+    <joint name="wheel2_joint" type="continuous">
+        <parent link="body_link"/>
+        <child link="wheel2_link"/>
+        <origin xyz="0.3 -0.35 -0.1" rpy="0 0 0"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+    <link name="wheel2_link">
+        <visual>
+            <origin rpy="1.570795 0 0" xyz="0 0 0"/>
+            <geometry>
+                <cylinder length="0.1" radius="0.15"/>
+            </geometry>
+            <material name="yellow">
+                <color rgba="1 1 0 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <!-- ?? ???? ???? (???? ??) -->
+    <joint name="wheel3_joint" type="continuous">
+        <parent link="body_link"/>
+        <child link="wheel3_link"/>
+        <origin xyz="-0.3 0.35 -0.1" rpy="0 0 0"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+    <link name="wheel3_link">
+        <visual>
+            <origin rpy="1.570795 0 0" xyz="0 0 0"/>
+            <geometry>
+                <cylinder length="0.1" radius="0.15"/>
+            </geometry>
+            <material name="yellow">
+                <color rgba="1 1 0 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <!-- ?? ???? ???? (?????? ??) -->
+    <joint name="wheel4_joint" type="continuous">
+        <parent link="body_link"/>
+        <child link="wheel4_link"/>
+        <origin xyz="0.3 0.35 -0.1" rpy="0 0 0"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+    <link name="wheel4_link">
+        <visual>
+            <origin rpy="1.570795 0 0" xyz="0 0 0"/>
+            <geometry>
+                <cylinder length="0.1" radius="0.15"/>
+            </geometry>
+            <material name="yellow">
+                <color rgba="1 1 0 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <!-- ?? ???? ?????? transmission -->
+    <transmission name="wheel1_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="wheel1_joint">
+            <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="wheel1_motor">
+            <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        </actuator>
+    </transmission>
+
+    <!-- ?? ???? ?????? transmission -->
+    <transmission name="wheel2_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="wheel2_joint">
+            <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="wheel2_motor">
+            <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        </actuator>
+    </transmission>
+
+    <!-- ?? ???? ?????? transmission -->
+    <transmission name="wheel3_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="wheel3_joint">
+            <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="wheel3_motor">
+            <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        </actuator>
+    </transmission>
+
+    <!-- ?? ???? ?????? transmission -->
+    <transmission name="wheel4_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="wheel4_joint">
+            <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="wheel4_motor">
+            <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        </actuator>
+    </transmission>
+</robot>
