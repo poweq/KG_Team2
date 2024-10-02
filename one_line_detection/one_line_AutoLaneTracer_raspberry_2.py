@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import math
 import serial
+import time  # Import the time module
 
 # Serial communication setup (set port and baud rate)
 ser = serial.Serial('/dev/ttyAMA1', 9600, timeout=1)
@@ -96,7 +97,7 @@ def detect_curve_lane(frame):
 
 # Function to calculate motor speeds
 def calculate_motor_values(angle):
-    base_speed = 80  # ???? ???? ???? ????
+    base_speed = 80
     motorA = motorB = motorC = motorD = base_speed
 
     left_boost = 30
@@ -122,6 +123,8 @@ def calculate_motor_values(angle):
     return motorA, motorB, motorC, motorD
 
 # Main loop
+time.sleep(10)  # Delay for 10 seconds before the motor starts operating
+
 try:
     while True:
         ret, frame = cap.read()
@@ -175,4 +178,3 @@ finally:
     cap.release()
     cv2.destroyAllWindows()
     ser.close()
-
