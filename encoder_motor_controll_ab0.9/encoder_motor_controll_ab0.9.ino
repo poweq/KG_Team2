@@ -155,10 +155,12 @@ void setMotorDirectionAndPWM(char motor, int pwmValue) {
   int absPWMValue = abs(pwmValue);  // PWM 값은 절대값으로 설정
   
   if (motor == 'a') {
+    absPWMValue = absPWMValue * 0.96;  // A 모터 10% 감속
     digitalWrite(motorA_DirectionPin1, direction);
     digitalWrite(motorA_DirectionPin2, !direction);
     analogWrite(motorA_PWM_Pin, absPWMValue);
   } else if (motor == 'b') {
+    absPWMValue = absPWMValue * 0.97;  // B 모터 10% 감속
     digitalWrite(motorB_DirectionPin1, direction);
     digitalWrite(motorB_DirectionPin2, !direction);
     analogWrite(motorB_PWM_Pin, absPWMValue);
