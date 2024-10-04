@@ -1,0 +1,3 @@
+[console_scripts]
+teleop_wheel = urdf_kg_test.teleop_wheel:main
+

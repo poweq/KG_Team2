@@ -1,0 +1,40 @@
+running egg_info
+creating build/urdf_kg_test/urdf_kg_test.egg-info
+writing build/urdf_kg_test/urdf_kg_test.egg-info/PKG-INFO
+writing dependency_links to build/urdf_kg_test/urdf_kg_test.egg-info/dependency_links.txt
+writing entry points to build/urdf_kg_test/urdf_kg_test.egg-info/entry_points.txt
+writing requirements to build/urdf_kg_test/urdf_kg_test.egg-info/requires.txt
+writing top-level names to build/urdf_kg_test/urdf_kg_test.egg-info/top_level.txt
+writing manifest file 'build/urdf_kg_test/urdf_kg_test.egg-info/SOURCES.txt'
+reading manifest file 'build/urdf_kg_test/urdf_kg_test.egg-info/SOURCES.txt'
+writing manifest file 'build/urdf_kg_test/urdf_kg_test.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/build
+creating /home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/build/lib
+creating /home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/build/lib/urdf_kg_test
+copying urdf_kg_test/__init__.py -> /home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/build/lib/urdf_kg_test
+copying urdf_kg_test/teleop_wheel.py -> /home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/build/lib/urdf_kg_test
+running install
+running install_lib
+creating /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/lib/python3.8/site-packages/urdf_kg_test
+copying /home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/build/lib/urdf_kg_test/__init__.py -> /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/lib/python3.8/site-packages/urdf_kg_test
+copying /home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/build/lib/urdf_kg_test/teleop_wheel.py -> /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/lib/python3.8/site-packages/urdf_kg_test
+byte-compiling /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/lib/python3.8/site-packages/urdf_kg_test/__init__.py to __init__.cpython-38.pyc
+byte-compiling /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/lib/python3.8/site-packages/urdf_kg_test/teleop_wheel.py to teleop_wheel.cpython-38.pyc
+running install_data
+creating /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/ament_index
+creating /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/ament_index/resource_index
+creating /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/ament_index/resource_index/packages
+copying resource/urdf_kg_test -> /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/ament_index/resource_index/packages
+copying package.xml -> /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/urdf_kg_test
+creating /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/urdf_kg_test/launch
+copying launch/display.launch.py -> /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/urdf_kg_test/launch
+creating /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/urdf_kg_test/urdf
+copying urdf/jdamr.urdf -> /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/urdf_kg_test/urdf
+creating /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/urdf_kg_test/rviz
+running install_egg_info
+Copying build/urdf_kg_test/urdf_kg_test.egg-info to /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/lib/python3.8/site-packages/urdf_kg_test-0.0.0-py3.8.egg-info
+running install_scripts
+Installing teleop_wheel script to /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/lib/urdf_kg_test
+writing list of installed files to '/home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/install.log'

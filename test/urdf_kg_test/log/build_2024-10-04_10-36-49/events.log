@@ -1,0 +1,138 @@
+[0.000000] (-) TimerEvent: {}
+[0.001343] (urdf_kg_test) JobQueued: {'identifier': 'urdf_kg_test', 'dependencies': OrderedDict()}
+[0.009338] (urdf_kg_test) JobStarted: {'identifier': 'urdf_kg_test'}
+[0.099154] (-) TimerEvent: {}
+[0.200890] (-) TimerEvent: {}
+[0.302400] (-) TimerEvent: {}
+[0.403402] (-) TimerEvent: {}
+[0.504441] (-) TimerEvent: {}
+[0.607200] (-) TimerEvent: {}
+[0.708243] (-) TimerEvent: {}
+[0.809053] (-) TimerEvent: {}
+[0.909850] (-) TimerEvent: {}
+[1.010772] (-) TimerEvent: {}
+[1.112008] (-) TimerEvent: {}
+[1.213313] (-) TimerEvent: {}
+[1.315014] (-) TimerEvent: {}
+[1.416430] (-) TimerEvent: {}
+[1.517219] (-) TimerEvent: {}
+[1.618315] (-) TimerEvent: {}
+[1.720070] (-) TimerEvent: {}
+[1.821248] (-) TimerEvent: {}
+[1.922865] (-) TimerEvent: {}
+[2.025554] (-) TimerEvent: {}
+[2.126728] (-) TimerEvent: {}
+[2.227447] (-) TimerEvent: {}
+[2.328581] (-) TimerEvent: {}
+[2.437071] (-) TimerEvent: {}
+[2.538472] (-) TimerEvent: {}
+[2.640250] (-) TimerEvent: {}
+[2.743431] (-) TimerEvent: {}
+[2.847354] (-) TimerEvent: {}
+[2.948232] (-) TimerEvent: {}
+[3.050005] (-) TimerEvent: {}
+[3.152924] (-) TimerEvent: {}
+[3.254501] (-) TimerEvent: {}
+[3.356410] (-) TimerEvent: {}
+[3.458163] (-) TimerEvent: {}
+[3.559659] (-) TimerEvent: {}
+[3.660472] (-) TimerEvent: {}
+[3.761362] (-) TimerEvent: {}
+[3.863524] (-) TimerEvent: {}
+[3.965079] (-) TimerEvent: {}
+[4.068010] (-) TimerEvent: {}
+[4.170095] (-) TimerEvent: {}
+[4.271342] (-) TimerEvent: {}
+[4.372069] (-) TimerEvent: {}
+[4.472960] (-) TimerEvent: {}
+[4.574015] (-) TimerEvent: {}
+[4.675086] (-) TimerEvent: {}
+[4.776523] (-) TimerEvent: {}
+[4.877361] (-) TimerEvent: {}
+[4.980453] (-) TimerEvent: {}
+[5.081955] (-) TimerEvent: {}
+[5.183185] (-) TimerEvent: {}
+[5.284484] (-) TimerEvent: {}
+[5.385245] (-) TimerEvent: {}
+[5.486017] (-) TimerEvent: {}
+[5.587652] (-) TimerEvent: {}
+[5.690688] (-) TimerEvent: {}
+[5.793088] (-) TimerEvent: {}
+[5.894328] (-) TimerEvent: {}
+[5.996137] (-) TimerEvent: {}
+[6.098149] (-) TimerEvent: {}
+[6.199533] (-) TimerEvent: {}
+[6.301664] (-) TimerEvent: {}
+[6.404245] (-) TimerEvent: {}
+[6.439520] (urdf_kg_test) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', 'setup.py', 'egg_info', '--egg-base', 'build/urdf_kg_test', 'build', '--build-base', '/home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/build', 'install', '--record', '/home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/install.log', '--install-scripts', '$base/lib/urdf_kg_test', '--single-version-externally-managed', 'install_data'], 'cwd': '/home/pi/ros2_ws/src/urdf_kg_test', 'env': {'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'pi', 'SSH_CLIENT': '192.168.100.1 63438 22', 'XDG_SESSION_TYPE': 'tty', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/home/pi/ros2_ws/install/uga_msg/lib:/home/pi/ros2_ws/install/cv_msg/lib:/opt/ros/foxy/opt/yaml_cpp_vendor/lib:/opt/ros/foxy/opt/rviz_ogre_vendor/lib:/opt/ros/foxy/lib/aarch64-linux-gnu:/opt/ros/foxy/lib::/usr/lib/aarch64-linux-gnu/gazebo-11/plugins:', 'MOTD_SHOWN': 'pam', 'HOME': '/home/pi', 'OLDPWD': '/home/pi/ros2_ws/src/urdf_kg_test/urdf_kg_test', 'SSH_TTY': '/dev/pts/0', 'GAZEBO_MASTER_URI': 'http://localhost:11345', 'ROS_PYTHON_VERSION': '3', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLCON_PREFIX_PATH': '/home/pi/ros2_ws/install', 'ROS_DISTRO': 'foxy', 'LOGNAME': 'pi', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'XDG_SESSION_CLASS': 'user', 'TERM': 'xterm-256color', 'XDG_SESSION_ID': '3', 'GAZEBO_MODEL_PATH': '/usr/share/gazebo-11/models:', 'ROS_LOCALHOST_ONLY': '0', 'OGRE_RESOURCE_PATH': '/usr/lib/aarch64-linux-gnu/OGRE-1.9.0', 'PATH': '/opt/ros/foxy/bin:/home/pi/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin', 'XDG_RUNTIME_DIR': '/run/user/1000', 'LANG': 'en_US.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:', 'ROS_DOMAIN_ID': '1', 'AMENT_PREFIX_PATH': '/home/pi/ros2_ws/install/urdf_test:/home/pi/ros2_ws/install/urdf_kg_test:/home/pi/ros2_ws/install/uga_msg:/home/pi/ros2_ws/install/turtlebot3:/home/pi/ros2_ws/install/turtlebot3_teleop:/home/pi/ros2_ws/install/turtlebot3_simulations:/home/pi/ros2_ws/install/turtlebot3_bringup:/home/pi/ros2_ws/install/turtlebot3_navigation2:/home/pi/ros2_ws/install/turtlebot3_gazebo:/home/pi/ros2_ws/install/turtlebot3_fake_node:/home/pi/ros2_ws/install/turtlebot3_example:/home/pi/ros2_ws/install/turtlebot3_description:/home/pi/ros2_ws/install/turtlebot3_cartographer:/home/pi/ros2_ws/install/teleop_websoket:/home/pi/ros2_ws/install/ros_servo:/home/pi/ros2_ws/install/ros_msg:/home/pi/ros2_ws/install/my_agv_01:/home/pi/ros2_ws/install/launch_urdf:/home/pi/ros2_ws/install/lanch_servo:/home/pi/ros2_ws/install/cv_msg:/opt/ros/foxy', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'GAZEBO_RESOURCE_PATH': '/usr/share/gazebo-11:', 'GAZEBO_MODEL_DATABASE_URI': 'http://models.gazebosim.org', 'PWD': '/home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test', 'TURTLEBOT3_MODEL': 'burger', 'LC_ALL': 'en_US.UTF-8', 'GAZEBO_PLUGIN_PATH': '/usr/lib/aarch64-linux-gnu/gazebo-11/plugins:', 'SSH_CONNECTION': '192.168.100.1 63438 192.168.100.201 22', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/lib/python3.8/site-packages:/home/pi/ros2_ws/install/urdf_test/lib/python3.8/site-packages:/home/pi/ros2_ws/install/urdf_kg_test/lib/python3.8/site-packages:/home/pi/ros2_ws/install/uga_msg/lib/python3.8/site-packages:/home/pi/ros2_ws/install/turtlebot3_teleop/lib/python3.8/site-packages:/home/pi/ros2_ws/install/turtlebot3_example/lib/python3.8/site-packages:/home/pi/ros2_ws/install/teleop_websoket/lib/python3.8/site-packages:/home/pi/ros2_ws/install/ros_servo/lib/python3.8/site-packages:/home/pi/ros2_ws/install/my_agv_01/lib/python3.8/site-packages:/home/pi/ros2_ws/install/launch_urdf/lib/python3.8/site-packages:/home/pi/ros2_ws/install/lanch_servo/lib/python3.8/site-packages:/home/pi/ros2_ws/install/cv_msg/lib/python3.8/site-packages:/opt/ros/foxy/lib/python3.8/site-packages', 'COLCON': '1', 'CMAKE_PREFIX_PATH': '/home/pi/ros2_ws/install/uga_msg:/home/pi/ros2_ws/install/turtlebot3:/home/pi/ros2_ws/install/turtlebot3_simulations:/home/pi/ros2_ws/install/turtlebot3_bringup:/home/pi/ros2_ws/install/turtlebot3_node:/home/pi/ros2_ws/install/turtlebot3_navigation2:/home/pi/ros2_ws/install/turtlebot3_gazebo:/home/pi/ros2_ws/install/turtlebot3_fake_node:/home/pi/ros2_ws/install/turtlebot3_description:/home/pi/ros2_ws/install/turtlebot3_cartographer:/home/pi/ros2_ws/install/ros_msg:/home/pi/ros2_ws/install/cv_msg'}, 'shell': False}
+[6.504915] (-) TimerEvent: {}
+[6.608331] (-) TimerEvent: {}
+[6.709976] (-) TimerEvent: {}
+[6.810858] (-) TimerEvent: {}
+[6.911867] (-) TimerEvent: {}
+[7.016796] (-) TimerEvent: {}
+[7.118747] (-) TimerEvent: {}
+[7.219462] (-) TimerEvent: {}
+[7.320676] (-) TimerEvent: {}
+[7.422404] (-) TimerEvent: {}
+[7.528124] (-) TimerEvent: {}
+[7.629147] (-) TimerEvent: {}
+[7.730253] (-) TimerEvent: {}
+[7.831224] (-) TimerEvent: {}
+[7.932577] (-) TimerEvent: {}
+[8.033996] (-) TimerEvent: {}
+[8.134705] (-) TimerEvent: {}
+[8.236112] (-) TimerEvent: {}
+[8.338344] (-) TimerEvent: {}
+[8.439911] (-) TimerEvent: {}
+[8.541404] (-) TimerEvent: {}
+[8.601171] (urdf_kg_test) StdoutLine: {'line': b'running egg_info\n'}
+[8.606162] (urdf_kg_test) StdoutLine: {'line': b'creating build/urdf_kg_test/urdf_kg_test.egg-info\n'}
+[8.609060] (urdf_kg_test) StdoutLine: {'line': b'writing build/urdf_kg_test/urdf_kg_test.egg-info/PKG-INFO\n'}
+[8.610960] (urdf_kg_test) StdoutLine: {'line': b'writing dependency_links to build/urdf_kg_test/urdf_kg_test.egg-info/dependency_links.txt\n'}
+[8.611812] (urdf_kg_test) StdoutLine: {'line': b'writing entry points to build/urdf_kg_test/urdf_kg_test.egg-info/entry_points.txt\n'}
+[8.612661] (urdf_kg_test) StdoutLine: {'line': b'writing requirements to build/urdf_kg_test/urdf_kg_test.egg-info/requires.txt\n'}
+[8.613497] (urdf_kg_test) StdoutLine: {'line': b'writing top-level names to build/urdf_kg_test/urdf_kg_test.egg-info/top_level.txt\n'}
+[8.623821] (urdf_kg_test) StdoutLine: {'line': b"writing manifest file 'build/urdf_kg_test/urdf_kg_test.egg-info/SOURCES.txt'\n"}
+[8.642131] (-) TimerEvent: {}
+[8.743260] (-) TimerEvent: {}
+[8.843613] (urdf_kg_test) StdoutLine: {'line': b"reading manifest file 'build/urdf_kg_test/urdf_kg_test.egg-info/SOURCES.txt'\n"}
+[8.844298] (-) TimerEvent: {}
+[8.848497] (urdf_kg_test) StdoutLine: {'line': b"writing manifest file 'build/urdf_kg_test/urdf_kg_test.egg-info/SOURCES.txt'\n"}
+[8.850257] (urdf_kg_test) StdoutLine: {'line': b'running build\n'}
+[8.851598] (urdf_kg_test) StdoutLine: {'line': b'running build_py\n'}
+[8.852266] (urdf_kg_test) StdoutLine: {'line': b'creating /home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/build\n'}
+[8.852808] (urdf_kg_test) StdoutLine: {'line': b'creating /home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/build/lib\n'}
+[8.853780] (urdf_kg_test) StdoutLine: {'line': b'creating /home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/build/lib/urdf_kg_test\n'}
+[8.854727] (urdf_kg_test) StdoutLine: {'line': b'copying urdf_kg_test/__init__.py -> /home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/build/lib/urdf_kg_test\n'}
+[8.855233] (urdf_kg_test) StdoutLine: {'line': b'copying urdf_kg_test/teleop_wheel.py -> /home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/build/lib/urdf_kg_test\n'}
+[8.855649] (urdf_kg_test) StdoutLine: {'line': b'running install\n'}
+[8.858694] (urdf_kg_test) StdoutLine: {'line': b'running install_lib\n'}
+[8.866663] (urdf_kg_test) StdoutLine: {'line': b'creating /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/lib/python3.8/site-packages/urdf_kg_test\n'}
+[8.867507] (urdf_kg_test) StdoutLine: {'line': b'copying /home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/build/lib/urdf_kg_test/__init__.py -> /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/lib/python3.8/site-packages/urdf_kg_test\n'}
+[8.868286] (urdf_kg_test) StdoutLine: {'line': b'copying /home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/build/lib/urdf_kg_test/teleop_wheel.py -> /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/lib/python3.8/site-packages/urdf_kg_test\n'}
+[8.872130] (urdf_kg_test) StdoutLine: {'line': b'byte-compiling /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/lib/python3.8/site-packages/urdf_kg_test/__init__.py to __init__.cpython-38.pyc\n'}
+[8.879035] (urdf_kg_test) StdoutLine: {'line': b'byte-compiling /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/lib/python3.8/site-packages/urdf_kg_test/teleop_wheel.py to teleop_wheel.cpython-38.pyc\n'}
+[8.882516] (urdf_kg_test) StdoutLine: {'line': b'running install_data\n'}
+[8.883715] (urdf_kg_test) StdoutLine: {'line': b'creating /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/ament_index\n'}
+[8.885041] (urdf_kg_test) StdoutLine: {'line': b'creating /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/ament_index/resource_index\n'}
+[8.886553] (urdf_kg_test) StdoutLine: {'line': b'creating /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/ament_index/resource_index/packages\n'}
+[8.887798] (urdf_kg_test) StdoutLine: {'line': b'copying resource/urdf_kg_test -> /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/ament_index/resource_index/packages\n'}
+[8.889266] (urdf_kg_test) StdoutLine: {'line': b'copying package.xml -> /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/urdf_kg_test\n'}
+[8.890338] (urdf_kg_test) StdoutLine: {'line': b'creating /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/urdf_kg_test/launch\n'}
+[8.891239] (urdf_kg_test) StdoutLine: {'line': b'copying launch/display.launch.py -> /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/urdf_kg_test/launch\n'}
+[8.891977] (urdf_kg_test) StdoutLine: {'line': b'creating /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/urdf_kg_test/urdf\n'}
+[8.892701] (urdf_kg_test) StdoutLine: {'line': b'copying urdf/jdamr.urdf -> /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/urdf_kg_test/urdf\n'}
+[8.893268] (urdf_kg_test) StdoutLine: {'line': b'creating /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/urdf_kg_test/rviz\n'}
+[8.893945] (urdf_kg_test) StdoutLine: {'line': b'running install_egg_info\n'}
+[8.903460] (urdf_kg_test) StdoutLine: {'line': b'Copying build/urdf_kg_test/urdf_kg_test.egg-info to /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/lib/python3.8/site-packages/urdf_kg_test-0.0.0-py3.8.egg-info\n'}
+[8.910854] (urdf_kg_test) StdoutLine: {'line': b'running install_scripts\n'}
+[8.944560] (-) TimerEvent: {}
+[9.021595] (urdf_kg_test) StdoutLine: {'line': b'Installing teleop_wheel script to /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/lib/urdf_kg_test\n'}
+[9.023321] (urdf_kg_test) StdoutLine: {'line': b"writing list of installed files to '/home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/install.log'\n"}
+[9.044988] (-) TimerEvent: {}
+[9.148737] (-) TimerEvent: {}
+[9.176150] (urdf_kg_test) CommandEnded: {'returncode': 0}
+[9.249037] (-) TimerEvent: {}
+[9.257265] (urdf_kg_test) JobEnded: {'identifier': 'urdf_kg_test', 'rc': 0}
+[9.265077] (-) EventReactorShutdown: {}

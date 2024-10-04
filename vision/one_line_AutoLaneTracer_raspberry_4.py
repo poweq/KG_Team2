@@ -94,26 +94,25 @@ def detect_curve_lane(frame):
     else:
         return None, None, None
 
-
 # Function to calculate motor speeds
 def calculate_motor_values(angle):
-    base_speed = 100  # 기본 모터 속도
+    base_speed = 100  # 기본 모터 속도 설정
     motorA = motorB = motorC = motorD = base_speed
 
-   #lef motor power add
+    # 좌/우 회전 시 부스트 값 설정
     left_boost = 30
     right_boost = 30
 
-    if angle < 85:  # Left turn
-        motorA = base_speed - (86 - angle)
-        motorB = base_speed - (86 - angle)
-        motorC = base_speed + right_boost + (86 - angle)
-        motorD = base_speed + right_boost + (86 - angle)
+    if angle < 89:  # Left turn
+        motorA = base_speed - (89 - angle)
+        motorB = base_speed - (89 - angle)
+        motorC = base_speed + right_boost + (89 - angle)
+        motorD = base_speed + right_boost + (89 - angle)
     elif angle > 95:  # Right turn
-        motorC = base_speed - (angle - 94)
-        motorD = base_speed - (angle - 94)
-        motorA = base_speed + left_boost + (angle - 94)
-        motorB = base_speed + left_boost + (angle - 94)
+        motorC = base_speed - (angle - 95)
+        motorD = base_speed - (angle - 95)
+        motorA = base_speed + left_boost + (angle - 95)
+        motorB = base_speed + left_boost + (angle - 95)
     else:  # Straight
         motorA = base_speed
         motorB = base_speed 
@@ -121,10 +120,6 @@ def calculate_motor_values(angle):
         motorD = base_speed
 
     return motorA, motorB, motorC, motorD
-
-
-
-    
 
 # Main loop
 try:
@@ -180,3 +175,4 @@ finally:
     cap.release()
     cv2.destroyAllWindows()
     ser.close()
+

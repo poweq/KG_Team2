@@ -1,0 +1,48 @@
+<robot name="jdamr">
+    <!-- robot body link  -->
+    <link name="body_link">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0"/> <!-- rpy: roll pitch yaw origin: origin point-->
+            <geometry>
+                <box size="1 0.6 0.3"/>  <!-- box size -->
+            </geometry>
+            <material name="red">
+                <color rgba="1 0 0 1"/>
+            </material>
+        </visual>
+    </link>
+     <joint name="wheel1_joint" type="continuous">
+        <parent link="body_link"/>
+        <child link="wheel1_link" />
+        <origin xyz="-0.3 -0.35 -0.1" rpy="0 0 0"/>
+        <axis xyz="0 1 0" />
+    </joint>
+    <link name="wheel1_link">
+        <visual>
+            <origin rpy="1.570795 0 0" xyz="0 0 0"/>
+            <geometry>
+                <cylinder length="0.1" radius="0.15"/>
+            </geometry>
+            <material name="yellow">
+                <color rgba="1 1 0 1"/>
+            </material>
+        </visual>
+    </link>
+         <joint name="wheel2_joint" type="continuous">
+        <parent link="body_link"/>
+        <child link="wheel2_link" />
+        <origin xyz="0.3 -0.35 -0.1" rpy="0 0 0"/>
+        <axis xyz="0 1 0" />
+    </joint>
+    <link name="wheel2_link">
+        <visual>
+            <origin rpy="1.570795 0 0" xyz="0 0 0"/>
+            <geometry>
+                <cylinder length="0.1" radius="0.15"/>
+            </geometry>
+            <material name="yellow">
+                <color rgba="1 1 0 1"/>
+            </material>
+        </visual>
+    </link>
+</robot>

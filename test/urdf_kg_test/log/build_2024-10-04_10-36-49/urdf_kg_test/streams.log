@@ -1,0 +1,42 @@
+[6.449s] Invoking command in '/home/pi/ros2_ws/src/urdf_kg_test': PYTHONPATH=/home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/lib/python3.8/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base build/urdf_kg_test build --build-base /home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/build install --record /home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/install.log --install-scripts $base/lib/urdf_kg_test --single-version-externally-managed install_data
+[8.592s] running egg_info
+[8.597s] creating build/urdf_kg_test/urdf_kg_test.egg-info
+[8.600s] writing build/urdf_kg_test/urdf_kg_test.egg-info/PKG-INFO
+[8.602s] writing dependency_links to build/urdf_kg_test/urdf_kg_test.egg-info/dependency_links.txt
+[8.603s] writing entry points to build/urdf_kg_test/urdf_kg_test.egg-info/entry_points.txt
+[8.604s] writing requirements to build/urdf_kg_test/urdf_kg_test.egg-info/requires.txt
+[8.604s] writing top-level names to build/urdf_kg_test/urdf_kg_test.egg-info/top_level.txt
+[8.615s] writing manifest file 'build/urdf_kg_test/urdf_kg_test.egg-info/SOURCES.txt'
+[8.835s] reading manifest file 'build/urdf_kg_test/urdf_kg_test.egg-info/SOURCES.txt'
+[8.840s] writing manifest file 'build/urdf_kg_test/urdf_kg_test.egg-info/SOURCES.txt'
+[8.842s] running build
+[8.842s] running build_py
+[8.843s] creating /home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/build
+[8.844s] creating /home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/build/lib
+[8.845s] creating /home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/build/lib/urdf_kg_test
+[8.845s] copying urdf_kg_test/__init__.py -> /home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/build/lib/urdf_kg_test
+[8.846s] copying urdf_kg_test/teleop_wheel.py -> /home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/build/lib/urdf_kg_test
+[8.846s] running install
+[8.850s] running install_lib
+[8.858s] creating /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/lib/python3.8/site-packages/urdf_kg_test
+[8.858s] copying /home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/build/lib/urdf_kg_test/__init__.py -> /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/lib/python3.8/site-packages/urdf_kg_test
+[8.859s] copying /home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/build/lib/urdf_kg_test/teleop_wheel.py -> /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/lib/python3.8/site-packages/urdf_kg_test
+[8.863s] byte-compiling /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/lib/python3.8/site-packages/urdf_kg_test/__init__.py to __init__.cpython-38.pyc
+[8.870s] byte-compiling /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/lib/python3.8/site-packages/urdf_kg_test/teleop_wheel.py to teleop_wheel.cpython-38.pyc
+[8.873s] running install_data
+[8.875s] creating /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/ament_index
+[8.876s] creating /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/ament_index/resource_index
+[8.878s] creating /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/ament_index/resource_index/packages
+[8.879s] copying resource/urdf_kg_test -> /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/ament_index/resource_index/packages
+[8.880s] copying package.xml -> /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/urdf_kg_test
+[8.881s] creating /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/urdf_kg_test/launch
+[8.882s] copying launch/display.launch.py -> /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/urdf_kg_test/launch
+[8.883s] creating /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/urdf_kg_test/urdf
+[8.883s] copying urdf/jdamr.urdf -> /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/urdf_kg_test/urdf
+[8.884s] creating /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/share/urdf_kg_test/rviz
+[8.885s] running install_egg_info
+[8.894s] Copying build/urdf_kg_test/urdf_kg_test.egg-info to /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/lib/python3.8/site-packages/urdf_kg_test-0.0.0-py3.8.egg-info
+[8.902s] running install_scripts
+[9.012s] Installing teleop_wheel script to /home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/lib/urdf_kg_test
+[9.014s] writing list of installed files to '/home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/install.log'
+[9.167s] Invoked command in '/home/pi/ros2_ws/src/urdf_kg_test' returned '0': PYTHONPATH=/home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/pi/ros2_ws/src/urdf_kg_test/install/urdf_kg_test/lib/python3.8/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base build/urdf_kg_test build --build-base /home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/build install --record /home/pi/ros2_ws/src/urdf_kg_test/build/urdf_kg_test/install.log --install-scripts $base/lib/urdf_kg_test --single-version-externally-managed install_data

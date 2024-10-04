@@ -37,14 +37,17 @@ def detect_curve_lane(frame):
     # Convert to HSV and filter colors (white and yellow lanes)
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     white_mask = cv2.inRange(hsv, (0, 0, 200), (180, 30, 255))  # Filter white
-    yellow_mask = cv2.inRange(hsv, (15, 100, 100), (35, 255, 255))  # Filter yellow
+    yellow_mask = cv2.inRange(hsv, (10, 100, 100), (40, 255, 255))  # Filter yellow (확장)
     combined_mask = cv2.bitwise_or(white_mask, yellow_mask)
     filtered_frame = cv2.bitwise_and(frame, frame, mask=combined_mask)
 
     # Convert filtered frame to grayscale and apply Gaussian Blur
     gray = cv2.cvtColor(filtered_frame, cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray, (7, 7), 0)
-    edges = cv2.Canny(blur, 50, 150)
+
+    # Apply thresholding to further remove noise
+    _, binary = cv2.threshold(blur, 120, 255, cv2.THRESH_BINARY)
+    edges = cv2.Canny(binary, 50, 150)
 
     # Define a region of interest (ROI)
     height, width = edges.shape
@@ -52,25 +55,31 @@ def detect_curve_lane(frame):
     polygon = np.array([[
         (0, height),
         (width, height),
-        (int(width * 0.6), int(height * 0.6)),
-        (int(width * 0.4), int(height * 0.6))
+        (int(width * 0.7), int(height * 0.6)),  # 오른쪽으로 확장
+        (int(width * 0.3), int(height * 0.6))   # 왼쪽으로 확장
     ]], np.int32)
     cv2.fillPoly(mask, polygon, 255)
     masked_edges = cv2.bitwise_and(edges, mask)
 
     # Hough Line detection with adjusted parameters
-    lines = cv2.HoughLinesP(masked_edges, 1, np.pi / 180, 30, minLineLength=30, maxLineGap=200)
+    lines = cv2.HoughLinesP(masked_edges, 1, np.pi / 180, 20, minLineLength=20, maxLineGap=250)
 
     if lines is None:
         return None, None, None
 
-    points = []
+    # Filter lines to prioritize left side detection
+    left_lines = []
     for line in lines:
         for x1, y1, x2, y2 in line:
-            points.append([x1, y1])
-            points.append([x2, y2])
+            if x1 < width / 2 and x2 < width / 2:  # 왼쪽에 있는 선들만 선택
+                left_lines.append([x1, y1, x2, y2])
 
-    points = np.array(points)
+    if len(left_lines) > 0:
+        points = np.array(left_lines)
+    else:
+        points = np.array([line for line in lines])
+
+    # Fit a line to the detected points
     if len(points) > 0:
         [vx, vy, x, y] = cv2.fitLine(points, cv2.DIST_L2, 0, 0.01, 0.01)
         
@@ -94,37 +103,32 @@ def detect_curve_lane(frame):
     else:
         return None, None, None
 
-
 # Function to calculate motor speeds
 def calculate_motor_values(angle):
     base_speed = 100  # 기본 모터 속도
     motorA = motorB = motorC = motorD = base_speed
 
-   #lef motor power add
-    left_boost = 30
-    right_boost = 30
+    # 왼쪽 모터의 출력을 높이기 위한 추가 설정
+    left_boost = 10 
+    right_boost = 10
 
-    if angle < 85:  # Left turn
+    if angle < 86:  # Left turn
         motorA = base_speed - (86 - angle)
         motorB = base_speed - (86 - angle)
-        motorC = base_speed + right_boost + (86 - angle)
-        motorD = base_speed + right_boost + (86 - angle)
-    elif angle > 95:  # Right turn
+        motorC = base_speed + right_boost - (86 - angle)
+        motorD = base_speed + right_boost - (86 - angle)
+    elif angle > 94:  # Right turn
         motorC = base_speed - (angle - 94)
         motorD = base_speed - (angle - 94)
         motorA = base_speed + left_boost + (angle - 94)
         motorB = base_speed + left_boost + (angle - 94)
-    else:  # Straight
+    else:  # 직진
         motorA = base_speed
-        motorB = base_speed 
+        motorB = base_speed
         motorC = base_speed
         motorD = base_speed
 
     return motorA, motorB, motorC, motorD
-
-
-
-    
 
 # Main loop
 try:
@@ -180,3 +184,4 @@ finally:
     cap.release()
     cv2.destroyAllWindows()
     ser.close()
+
