@@ -156,6 +156,9 @@ try:
         # Calculate motor speeds based on angle
         motorA, motorB, motorC, motorD = calculate_motor_values(angle)
 
+        # Delay for 2 seconds before sending motor commands
+        time.sleep(2)
+
         # Send motor commands via serial communication
         motor_command = f'a:{motorA} b:{motorB} c:{motorC} d:{motorD}\n'
         ser.write(motor_command.encode())
