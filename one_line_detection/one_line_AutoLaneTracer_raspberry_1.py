@@ -161,25 +161,25 @@ try:
                 motor_command = 'a:-50 b:-50 c:50 d:50\n'
                 ser.write(motor_command.encode())
             time.sleep(1)  # Rotate for 1 second
-            continue
+        else:
+            # Store the last detected angle when lane is detected
+            last_detected_angle = angle
 
-        # Store the last detected angle when lane is detected
-        last_detected_angle = angle
+            # Calculate motor speeds based on angle
+            motorA, motorB, motorC, motorD = calculate_motor_values(angle)
 
-        # Calculate motor speeds based on angle
-        motorA, motorB, motorC, motorD = calculate_motor_values(angle)
-
-        # Send motor commands via serial communication
-        motor_command = f'a:{motorA} b:{motorB} c:{motorC} d:{motorD}\n'
-        ser.write(motor_command.encode())
-        print(f"Sending motor command: {motor_command}")
+            # Send motor commands via serial communication
+            motor_command = f'a:{motorA} b:{motorB} c:{motorC} d:{motorD}\n'
+            ser.write(motor_command.encode())
+            print(f"Sending motor command: {motor_command}")
 
         # Draw a virtual vertical center line
         cv2.line(frame, (frame_center_x, 0), (frame_center_x, height), (255, 0, 0), 2)
 
-        # Display angle and distance between lane and center
-        angle_text = f"Angle: {angle}"  # Output integer angle
-        cv2.putText(frame, angle_text, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        # Display angle and distance between lane and center (if lane detected)
+        if lane_center is not None:
+            angle_text = f"Angle: {angle}"  # Output integer angle
+            cv2.putText(frame, angle_text, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
         # Overlay the lane image with the center line
         if lane_image is not None:
