@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import math
 import serial
+import time
 
 # Serial communication setup (set port and baud rate)
 ser = serial.Serial('/dev/ttyAMA1', 9600, timeout=1)
@@ -10,6 +11,11 @@ ser = serial.Serial('/dev/ttyAMA1', 9600, timeout=1)
 cap = cv2.VideoCapture(0)
 cap.set(3, 640)  # Set frame width
 cap.set(4, 480)  # Set frame height
+
+# Add delay of 5 seconds before starting motor control
+print("waiting... 5sec")
+time.sleep(5)
+print("starting motor control.")
 
 # Function to calculate lane angle
 def calculate_angle(x1, y1, x2, y2, frame_center_x):
@@ -49,7 +55,7 @@ def detect_curve_lane(frame):
     # Define a region of interest (ROI)
     height, width = edges.shape
     mask = np.zeros_like(edges)
-    polygon = np.array([[
+    polygon = np.array([[ 
         (0, height),
         (width, height),
         (int(width * 0.6), int(height * 0.6)),
@@ -94,30 +100,38 @@ def detect_curve_lane(frame):
     else:
         return None, None, None
 
-
 # Function to calculate motor speeds
 def calculate_motor_values(angle):
-    base_speed = 100  
+    base_speed = 100
+    turn_speed = 50
     motorA = motorB = motorC = motorD = base_speed
 
-   #lef motor power add
-    left_boost = 50 
-    right_boost = 30
-    if angle < 89:  # Left turn
-        motorA = base_speed - (89 - angle)
-        motorB = base_speed - (89 - angle)
-        motorC = base_speed + right_boost - (89 - angle)
-        motorD = base_speed + right_boost - (89 - angle)
-    elif angle > 95:  # Right turn
-        motorC = base_speed - (angle - 94)
-        motorD = base_speed - (angle - 94)
-        motorA = base_speed + left_boost + (angle - 94)
-        motorB = base_speed + left_boost + (angle - 94)
+    left_boost = 60
+    right_boost = 60
+
+    if angle < 85:  # Left turn
+        motorA = turn_speed
+        motorB = turn_speed
+        motorC = turn_speed + right_boost
+        motorD = turn_speed + right_boost
+    elif angle > 97:  # Right turn
+        motorA = turn_speed + left_boost
+        motorB = turn_speed + left_boost
+        motorC = turn_speed
+        motorD = turn_speed
     else:  # Straight
         motorA = base_speed
         motorB = base_speed 
         motorC = base_speed
         motorD = base_speed
+
+    # Adjust motor A and B to match the lower speed
+    min_AB = min(motorA, motorB)
+    motorA = motorB = min_AB
+
+    # Adjust motor C and D to match the lower speed
+    min_CD = min(motorC, motorD)
+    motorC = motorD = min_CD
 
     return motorA, motorB, motorC, motorD
 
