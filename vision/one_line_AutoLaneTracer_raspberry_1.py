@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import math
 import serial
+import time
 
 # Serial communication setup (set port and baud rate)
 ser = serial.Serial('/dev/ttyAMA1', 9600, timeout=1)
@@ -10,6 +11,11 @@ ser = serial.Serial('/dev/ttyAMA1', 9600, timeout=1)
 cap = cv2.VideoCapture(0)
 cap.set(3, 640)  # Set frame width
 cap.set(4, 480)  # Set frame height
+
+# Add delay of 5 seconds before starting motor control
+print("waiting... 5sec")
+time.sleep(5)
+print("starting motor control.")
 
 # Function to calculate lane angle
 def calculate_angle(x1, y1, x2, y2, frame_center_x):
@@ -49,7 +55,7 @@ def detect_curve_lane(frame):
     # Define a region of interest (ROI)
     height, width = edges.shape
     mask = np.zeros_like(edges)
-    polygon = np.array([[
+    polygon = np.array([[ 
         (0, height),
         (width, height),
         (int(width * 0.6), int(height * 0.6)),
@@ -94,45 +100,48 @@ def detect_curve_lane(frame):
     else:
         return None, None, None
 
-
-# Function to calculate motor speeds
+# Function to calculate motor speeds based on angle
 def calculate_motor_values(angle):
-    base_speed = 100  # 기본 모터 속도
+    base_speed = 100
+    max_turn_adjustment = 60  # Maximum motor speed adjustment
     motorA = motorB = motorC = motorD = base_speed
 
-   #lef motor power add
-    left_boost = 30
-    right_boost = 30
-
-    if angle < 85:  # Left turn
-        motorA = base_speed - (86 - angle)
-        motorB = base_speed - (86 - angle)
-        motorC = base_speed + right_boost + (86 - angle)
-        motorD = base_speed + right_boost + (86 - angle)
-    elif angle > 95:  # Right turn
-        motorC = base_speed - (angle - 94)
-        motorD = base_speed - (angle - 94)
-        motorA = base_speed + left_boost + (angle - 94)
-        motorB = base_speed + left_boost + (angle - 94)
-    else:  # Straight
+    # Adjust motor speeds for left or right turns based on the angle
+    if angle < 85:  # Need to turn left
+        adjustment = int((85 - angle) / 85 * max_turn_adjustment)
+        motorA = base_speed - adjustment
+        motorB = base_speed - adjustment
+        motorC = base_speed + adjustment
+        motorD = base_speed + adjustment
+    elif angle > 97:  # Need to turn right
+        adjustment = int((angle - 97) / 83 * max_turn_adjustment)
+        motorA = base_speed + adjustment
+        motorB = base_speed + adjustment
+        motorC = base_speed - adjustment
+        motorD = base_speed - adjustment
+    else:  # Go straight (angle between 85 and 97)
         motorA = base_speed
-        motorB = base_speed 
+        motorB = base_speed
         motorC = base_speed
         motorD = base_speed
 
+    # Limit motor speed range (between 0 and 255)
+    motorA = max(0, min(255, motorA))
+    motorB = max(0, min(255, motorB))
+    motorC = max(0, min(255, motorC))
+    motorD = max(0, min(255, motorD))
+
     return motorA, motorB, motorC, motorD
 
-
-
-    
-
 # Main loop
+last_detected_angle = 90  # Store the last detected lane angle to determine rotation when no lane is detected
+
 try:
     while True:
         ret, frame = cap.read()
         if not ret:
-            print("Camera error")
-            break
+            print("Camera error. Retrying...")
+            continue  # Skip to the next iteration and try reading the camera again
 
         height, width = frame.shape[:2]
         frame_center_x = width // 2
@@ -141,23 +150,36 @@ try:
         lane_center, lane_image, angle = detect_curve_lane(frame)
 
         if lane_center is None:
-            print("Cannot find lane.")
-            continue
+            print("Cannot find lane. Rotating...")
+            # If lane is not detected, rotate based on the last detected angle
+            if last_detected_angle < 90:
+                # Rotate to the right
+                motor_command = 'a:50 b:50 c:-50 d:-50\n'
+                ser.write(motor_command.encode())
+            else:
+                # Rotate to the left
+                motor_command = 'a:-50 b:-50 c:50 d:50\n'
+                ser.write(motor_command.encode())
+            time.sleep(1)  # Rotate for 1 second
+        else:
+            # Store the last detected angle when lane is detected
+            last_detected_angle = angle
 
-        # Calculate motor speeds based on angle
-        motorA, motorB, motorC, motorD = calculate_motor_values(angle)
+            # Calculate motor speeds based on angle
+            motorA, motorB, motorC, motorD = calculate_motor_values(angle)
 
-        # Send motor commands via serial communication
-        motor_command = f'a:{motorA} b:{motorB} c:{motorC} d:{motorD}\n'
-        ser.write(motor_command.encode())
-        print(f"Sending motor command: {motor_command}")
+            # Send motor commands via serial communication
+            motor_command = f'a:{motorA} b:{motorB} c:{motorC} d:{motorD}\n'
+            ser.write(motor_command.encode())
+            print(f"Sending motor command: {motor_command}")
 
         # Draw a virtual vertical center line
         cv2.line(frame, (frame_center_x, 0), (frame_center_x, height), (255, 0, 0), 2)
 
-        # Display angle and distance between lane and center
-        angle_text = f"Angle: {angle}"  # Output integer angle
-        cv2.putText(frame, angle_text, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        # Display angle and distance between lane and center (if lane detected)
+        if lane_center is not None:
+            angle_text = f"Angle: {angle}"  # Output integer angle
+            cv2.putText(frame, angle_text, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
         # Overlay the lane image with the center line
         if lane_image is not None:
@@ -180,3 +202,4 @@ finally:
     cap.release()
     cv2.destroyAllWindows()
     ser.close()
+
