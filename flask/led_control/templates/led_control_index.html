@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UART Control</title>
+</head>
+<body>
+    <h1>UART Control Panel</h1>
+    <form method="post">
+        <button name="color" value="l">Left</button>
+        <button name="color" value="g">Go</button>
+        <button name="color" value="r">Right</button>
+    </form>
+
+    {% if received_data %}
+    <p>Received data: {{ received_data }}</p>
+    {% endif %}
+</body>
+</html>
+
