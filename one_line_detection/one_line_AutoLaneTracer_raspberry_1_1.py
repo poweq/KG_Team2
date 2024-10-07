@@ -100,48 +100,48 @@ def detect_curve_lane(frame):
     else:
         return None, None, None
 
-# Function to calculate motor speeds based on angle
+# Function to calculate motor speeds
 def calculate_motor_values(angle):
     base_speed = 100
-    max_turn_adjustment = 60  # Maximum motor speed adjustment
+    turn_speed = 50
     motorA = motorB = motorC = motorD = base_speed
 
-    # Adjust motor speeds for left or right turns based on the angle
-    if angle < 85:  # Need to turn left
-        adjustment = int((85 - angle) / 85 * max_turn_adjustment)
-        motorA = base_speed - adjustment
-        motorB = base_speed - adjustment
-        motorC = base_speed + adjustment
-        motorD = base_speed + adjustment
-    elif angle > 97:  # Need to turn right
-        adjustment = int((angle - 97) / 83 * max_turn_adjustment)
-        motorA = base_speed + adjustment
-        motorB = base_speed + adjustment
-        motorC = base_speed - adjustment
-        motorD = base_speed - adjustment
-    else:  # Go straight (angle between 85 and 97)
+    left_boost = 60
+    right_boost = 60
+
+    if angle < 85:  # Left turn
+        motorA = turn_speed
+        motorB = turn_speed
+        motorC = turn_speed + right_boost
+        motorD = turn_speed + right_boost
+    elif angle > 97:  # Right turn
+        motorA = turn_speed + left_boost
+        motorB = turn_speed + left_boost
+        motorC = turn_speed
+        motorD = turn_speed
+    else:  # Straight
         motorA = base_speed
-        motorB = base_speed
+        motorB = base_speed 
         motorC = base_speed
         motorD = base_speed
 
-    # Limit motor speed range (between 0 and 255)
-    motorA = max(0, min(255, motorA))
-    motorB = max(0, min(255, motorB))
-    motorC = max(0, min(255, motorC))
-    motorD = max(0, min(255, motorD))
+    # Adjust motor A and B to match the lower speed
+    min_AB = min(motorA, motorB)
+    motorA = motorB = min_AB
+
+    # Adjust motor C and D to match the lower speed
+    min_CD = min(motorC, motorD)
+    motorC = motorD = min_CD
 
     return motorA, motorB, motorC, motorD
 
 # Main loop
-last_detected_angle = 90  # Store the last detected lane angle to determine rotation when no lane is detected
-
 try:
     while True:
         ret, frame = cap.read()
         if not ret:
-            print("Camera error. Retrying...")
-            continue  # Skip to the next iteration and try reading the camera again
+            print("Camera error")
+            break
 
         height, width = frame.shape[:2]
         frame_center_x = width // 2
@@ -150,21 +150,8 @@ try:
         lane_center, lane_image, angle = detect_curve_lane(frame)
 
         if lane_center is None:
-            print("Cannot find lane. Rotating...")
-            # If lane is not detected, rotate based on the last detected angle
-            if last_detected_angle < 90:
-                # Rotate to the right
-                motor_command = 'a:50 b:50 c:-50 d:-50\n'
-                ser.write(motor_command.encode())
-            else:
-                # Rotate to the left
-                motor_command = 'a:-50 b:-50 c:50 d:50\n'
-                ser.write(motor_command.encode())
-            time.sleep(1)  # Rotate for 1 second
+            print("Cannot find lane.")
             continue
-
-        # Store the last detected angle when lane is detected
-        last_detected_angle = angle
 
         # Calculate motor speeds based on angle
         motorA, motorB, motorC, motorD = calculate_motor_values(angle)
