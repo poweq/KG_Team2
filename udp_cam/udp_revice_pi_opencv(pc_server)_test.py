@@ -5,21 +5,21 @@ import pickle
 import struct
 import math
 
-# UDP 설정
-video_receive_port = 5005  # 라즈베리파이에서 송신한 영상 데이터를 수신할 포트 번호
-angle_send_port = 6000  # 라즈베리파이로 각도 데이터를 송신할 포트 번호
-pi_ip = "172.30.1.100"  # 라즈베리파이의 IP 주소 (각도 데이터를 송신할 목적지)
+# UDP settings
+video_receive_port = 5005  # Port number to receive video data from Raspberry Pi
+angle_send_port = 6000  # Port number to send angle data to Raspberry Pi
+pi_ip = "172.30.1.100"  # Raspberry Pi IP address (destination for sending angle data)
 
-# 영상 수신을 위한 소켓 생성 및 바인딩
+# Create socket for receiving video data and bind it
 video_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 video_sock.bind(("0.0.0.0", video_receive_port))
 
-# 각도 송신을 위한 소켓 생성
+# Create socket for sending angle data
 angle_send_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-print("영상 수신 및 각도 송신 대기 중...")
+print("Waiting for video data and ready to send angle...")
 
-# 차선 각도 계산 함수
+# Function to calculate lane angle
 def calculate_angle(x1, y1, x2, y2, frame_center_x):
     dy = y1 - y2
     dx = x2 - x1
@@ -34,7 +34,7 @@ def calculate_angle(x1, y1, x2, y2, frame_center_x):
     
     return int(angle_degrees)
 
-# 차선 검출 함수
+# Function to detect lane
 def detect_curve_lane(frame):
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     white_mask = cv2.inRange(hsv, (0, 0, 200), (180, 30, 255))  # White lane filter
@@ -80,8 +80,13 @@ def detect_curve_lane(frame):
             return None, None, None
 
         line_image = np.zeros_like(frame)
+
+        # Check if the coordinates are valid before drawing the line
         if isinstance(lefty, int) and isinstance(righty, int):
-            cv2.line(line_image, (width - 1, righty), (0, lefty), (0, 255, 0), 5)
+            try:
+                cv2.line(line_image, (width - 1, righty), (0, lefty), (0, 255, 0), 5)
+            except Exception as e:
+                print(f"Error drawing line: {e}")
 
         angle = calculate_angle(0, lefty, width - 1, righty, width // 2)
 
@@ -91,64 +96,63 @@ def detect_curve_lane(frame):
 
 try:
     while True:
-        # 영상 데이터 수신
+        # Receive video data
         try:
-            video_data, video_addr = video_sock.recvfrom(65507)  # 최대 UDP 패킷 크기
-            video_size = struct.unpack("Q", video_data[:8])[0]   # 데이터의 크기 정보 읽기
-            video_frame_data = video_data[8:8 + video_size]      # 실제 영상 데이터 분리
-            frame = pickle.loads(video_frame_data)               # 직렬화 해제
-            frame = cv2.imdecode(frame, cv2.IMREAD_COLOR)        # JPEG를 OpenCV 이미지로 변환
+            video_data, video_addr = video_sock.recvfrom(65507)  # Maximum UDP packet size
+            video_size = struct.unpack("Q", video_data[:8])[0]   # Read the size of the data
+            video_frame_data = video_data[8:8 + video_size]      # Separate the actual video data
+            frame = pickle.loads(video_frame_data)               # Deserialize
+            frame = cv2.imdecode(frame, cv2.IMREAD_COLOR)        # Convert JPEG to OpenCV image
         except Exception as e:
-            print(f"카메라 수신 오류 발생: {e}")
-            continue  # 오류가 발생해도 프로그램을 계속 실행
+            print(f"Error receiving video: {e}")
+            continue  # Keep running even if an error occurs
 
-        # 차선 검출 및 각도 계산
+        # Detect lane and calculate angle
         lane_center, lane_image, angle = detect_curve_lane(frame)
 
         height, width = frame.shape[:2]
         frame_center_x = width // 2
-        frame_center_y = height // 2
 
-        # 차선이 검출되었는지 확인하고 각도 설정
+        # Check if lane is detected and set angle
         if lane_center is None:
-            print("차선을 찾을 수 없습니다.")
-            angle_text = "각도: N/A"
-            combined_image = frame  # 차선이 없을 경우, 원본 프레임만 표시
+            print("Lane not found.")
+            angle_text = "Angle: N/A"
+            combined_image = frame  # Display original frame if no lane is detected
         else:
-            # 각도 텍스트 설정
-            angle_text = f"각도: {angle}°"
-            print(f"검출된 각도: {angle_text}")  # 콘솔에 각도 출력
+            # Set angle text
+            angle_text = f"Angle: {angle}°"
+            print(f"Detected angle: {angle_text}")  # Print angle to console
 
-            # 차선과 각도를 포함한 이미지 생성
+            # Generate image with lane and angle information
             combined_image = cv2.addWeighted(frame, 0.8, lane_image, 1, 1)
 
-            # 각도 데이터를 라즈베리파이로 송신
+            # Send angle data to Raspberry Pi
             try:
-                angle_send_sock.sendto(angle_text.encode(), (pi_ip, angle_send_port))  # 각도 데이터 송신
+                angle_send_sock.sendto(angle_text.encode(), (pi_ip, angle_send_port))  # Send angle data
             except Exception as e:
-                print(f"각도 전송 중 오류 발생: {e}")
+                print(f"Error sending angle data: {e}")
 
-        # 수직 중심선 그리기
+        # Draw a virtual vertical center line
         cv2.line(combined_image, (frame_center_x, 0), (frame_center_x, height), (255, 0, 0), 2)
 
-        # 수평 중심선 그리기
-        cv2.line(combined_image, (0, frame_center_y), (width, frame_center_y), (0, 255, 0), 2)
+        # Draw a virtual horizontal center line (at the bottom of the screen)
+        cv2.line(combined_image, (0, height - 1), (width, height - 1), (0, 255, 0), 2)
 
-        # 각도를 영상에 표시
+        # Display the angle on the image
         cv2.putText(combined_image, angle_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
         
-        # 결과 영상 출력 (차선이 없을 경우에도 영상 출력)
+        # Show the result (even if no lane is detected)
         cv2.imshow("Lane Detection", combined_image)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
 except KeyboardInterrupt:
-    print("사용자에 의해 프로그램이 중단되었습니다.")
+    print("Program interrupted by user.")
 
 finally:
-    # 리소스 정리
+    # Release resources
     cv2.destroyAllWindows()
     video_sock.close()
     angle_send_sock.close()
-    print("프로그램이 정상적으로 종료되었습니다.")
+    print("Program terminated successfully.")

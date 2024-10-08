@@ -21,7 +21,7 @@ print("starting motor control.")
 def calculate_angle(x1, y1, x2, y2, frame_center_x):
     dy = y1 - y2
     dx = x2 - x1
-    angle_radians = math.atan2(dy, dx)
+    angle_radians =     math.atan2(dy, dx)
 
     # Convert angle to positive (range from 0 to 180 degrees)
     angle_degrees = math.degrees(angle_radians)

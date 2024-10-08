@@ -80,8 +80,13 @@ def detect_curve_lane(frame):
             return None, None, None
 
         line_image = np.zeros_like(frame)
+
+        # 좌표값이 유효한지 확인한 후 선을 그립니다
         if isinstance(lefty, int) and isinstance(righty, int):
-            cv2.line(line_image, (width - 1, righty), (0, lefty), (0, 255, 0), 5)
+            try:
+                cv2.line(line_image, (width - 1, righty), (0, lefty), (0, 255, 0), 5)
+            except Exception as e:
+                print(f"Error drawing line: {e}")
 
         angle = calculate_angle(0, lefty, width - 1, righty, width // 2)
 
@@ -107,7 +112,6 @@ try:
 
         height, width = frame.shape[:2]
         frame_center_x = width // 2
-        frame_center_y = height // 2
 
         # 차선이 검출되었는지 확인하고 각도 설정
         if lane_center is None:
@@ -131,8 +135,8 @@ try:
         # 수직 중심선 그리기
         cv2.line(combined_image, (frame_center_x, 0), (frame_center_x, height), (255, 0, 0), 2)
 
-        # 수평 중심선 그리기
-        cv2.line(combined_image, (0, frame_center_y), (width, frame_center_y), (0, 255, 0), 2)
+        # 수평선 그리기 (화면의 밑바닥에 위치)
+        cv2.line(combined_image, (0, height - 1), (width, height - 1), (0, 255, 0), 2)
 
         # 각도를 영상에 표시
         cv2.putText(combined_image, angle_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)

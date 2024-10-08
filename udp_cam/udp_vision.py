@@ -1,21 +1,14 @@
-# raspberry_pi_camera_sender_with_arduino_no_delay.py
 import cv2
 import socket
-import serial  # 시리얼 통신 모듈
 import struct
 import pickle
 import threading  # 스레드를 사용하여 각도 데이터 수신 병렬 처리
 import time
 
 # UDP 설정
-pc_ip = "172.30.1.46"  # Windows PC의 IP 주소 (환경에 맞게 설정)
+pc_ip = "172.30.1.42"  # Windows PC의 IP 주소 (환경에 맞게 설정)
 video_send_port = 5005  # Windows PC로 영상 데이터를 송신할 포트 번호
 angle_receive_port = 6000  # Windows PC로부터 각도 데이터를 수신할 포트 번호
-
-# 아두이노 시리얼 통신 설정
-arduino_port = '/dev/ttyAMA1'  # 아두이노와 연결된 시리얼 포트
-baud_rate = 9600  # 통신 속도
-ser = serial.Serial(arduino_port, baud_rate, timeout=1)  # 시리얼 포트 열기
 
 # 영상 송신을 위한 소켓 생성
 video_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -71,7 +64,7 @@ angle_thread = threading.Thread(target=receive_angle_data, daemon=True)
 angle_thread.start()
 
 try:
-    # 메인 송신 루프 (카메라 데이터 송신 및 아두이노로의 데이터 송신)
+    # 메인 송신 루프 (카메라 데이터 송신)
     while True:
         # 카메라로부터 프레임 읽기
         ret, frame = cap.read()
@@ -95,15 +88,6 @@ try:
             print(f"영상 데이터 송신 중 오류 발생: {e}")
             continue
 
-        # 아두이노로 각도 데이터 송신
-        if ser.is_open:
-            try:
-                with lock:
-                    ser.write((latest_angle + "\n").encode())  # 아두이노로 각도 데이터 전송 (줄바꿈 추가)
-                print(f"아두이노로 각도 데이터 송신: {latest_angle}")
-            except Exception as e:
-                print(f"아두이노로 데이터 송신 중 오류 발생: {e}")
-
         # 프레임 송신 주기 조절 (FPS 설정)
         time.sleep(0.033)  # 약 30fps로 송신 (필요에 따라 조절 가능)
 
@@ -115,5 +99,4 @@ finally:
     cap.release()
     video_sock.close()
     angle_receive_sock.close()
-    ser.close()  # 시리얼 포트 닫기
     print("프로그램이 정상적으로 종료되었습니다.")
