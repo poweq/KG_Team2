@@ -136,7 +136,7 @@ try:
         cv2.line(combined_image, (frame_center_x, 0), (frame_center_x, height), (255, 0, 0), 2)
 
         # Draw a virtual horizontal center line (at the bottom of the screen)
-        cv2.line(combined_image, (0, height - 1), (width, height - 1), (0, 255, 0), 2)
+        cv2.line(combined_image, (0, height - 1), (width, height - 1), (255, 0, 0), 2)
 
         # Display the angle on the image
         cv2.putText(combined_image, angle_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
