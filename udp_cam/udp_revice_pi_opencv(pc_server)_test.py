@@ -34,8 +34,8 @@ def calculate_angle(x1, y1, x2, y2, frame_center_x):
     
     return int(angle_degrees)
 
-# Function to detect lane
-def detect_curve_lane(frame):
+# Function to detect both left and right lanes 
+def detect_lanes(frame):
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     white_mask = cv2.inRange(hsv, (0, 0, 200), (180, 30, 255))  # White lane filter
     yellow_mask = cv2.inRange(hsv, (15, 100, 100), (35, 255, 255))  # Yellow lane filter
@@ -62,37 +62,40 @@ def detect_curve_lane(frame):
     if lines is None:
         return None, None, None
 
-    points = []
+    left_lane = []
+    right_lane = []
+    
     for line in lines:
         for x1, y1, x2, y2 in line:
-            points.append([x1, y1])
-            points.append([x2, y2])
+            slope = (y2 - y1) / (x2 - x1 + 1e-6)  # To avoid division by zero
+            intercept = y1 - slope * x1
+            if slope < 0:  # Left lane
+                left_lane.append((slope, intercept, x1, y1, x2, y2))
+            else:  # Right lane
+                right_lane.append((slope, intercept, x1, y1, x2, y2))
 
-    points = np.array(points)
-    if len(points) > 0:
-        [vx, vy, x, y] = cv2.fitLine(points, cv2.DIST_L2, 0, 0.01, 0.01)
-        
-        try:
-            lefty = int((-x * vy / vx) + y)
-            righty = int(((width - x) * vy / vx) + y)
-        except (ZeroDivisionError, ValueError) as e:
-            print(f"Error calculating lefty or righty: {e}")
-            return None, None, None
+    lane_image = np.zeros_like(frame)
+    
+    def draw_lane(lane_points):
+        if len(lane_points) > 0:
+            slope_avg, intercept_avg = np.mean(lane_points, axis=0)[:2]
+            y1 = height
+            y2 = int(height * 0.6)
+            x1 = int((y1 - intercept_avg) / slope_avg)
+            x2 = int((y2 - intercept_avg) / slope_avg)
+            cv2.line(lane_image, (x1, y1), (x2, y2), (0, 255, 0), 5)
+            return (x1, y1), (x2, y2)
+        return None
 
-        line_image = np.zeros_like(frame)
+    left_points = draw_lane(left_lane)
+    right_points = draw_lane(right_lane)
 
-        # Check if the coordinates are valid before drawing the line
-        if isinstance(lefty, int) and isinstance(righty, int):
-            try:
-                cv2.line(line_image, (width - 1, righty), (0, lefty), (0, 255, 0), 5)
-            except Exception as e:
-                print(f"Error drawing line: {e}")
-
-        angle = calculate_angle(0, lefty, width - 1, righty, width // 2)
-
-        return (width // 2, (lefty + righty) // 2), line_image, angle
+    if left_points and right_points:
+        left_angle = calculate_angle(*left_points[0], *left_points[1], width // 2)
+        right_angle = calculate_angle(*right_points[0], *right_points[1], width // 2)
+        return lane_image, (left_angle, right_angle)
     else:
-        return None, None, None
+        return None, None
 
 try:
     while True:
@@ -107,21 +110,21 @@ try:
             print(f"Error receiving video: {e}")
             continue  # Keep running even if an error occurs
 
-        # Detect lane and calculate angle
-        lane_center, lane_image, angle = detect_curve_lane(frame)
+        # Detect lanes and calculate angles
+        lane_image, angles = detect_lanes(frame)
 
         height, width = frame.shape[:2]
         frame_center_x = width // 2
 
-        # Check if lane is detected and set angle
-        if lane_center is None:
-            print("Lane not found.")
+        # Check if lanes are detected and set angle
+        if angles is None:
+            print("Lanes not found.")
             angle_text = "Angle: N/A"
-            combined_image = frame  # Display original frame if no lane is detected
+            combined_image = frame  # Display original frame if no lanes are detected
         else:
-            # Set angle text
-            angle_text = f"Angle: {angle}°"
-            print(f"Detected angle: {angle_text}")  # Print angle to console
+            left_angle, right_angle = angles
+            angle_text = f"Left: {left_angle}°, Right: {right_angle}°"
+            print(f"Detected angles: {angle_text}")  # Print angles to console
 
             # Generate image with lane and angle information
             combined_image = cv2.addWeighted(frame, 0.8, lane_image, 1, 1)

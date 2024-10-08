@@ -20,7 +20,7 @@ angle_send_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 print("영상 수신 및 각도 송신 대기 중...")
 
 # 차선 각도 계산 함수
-def calculate_angle(x1, y1, x2, y2, frame_center_x):
+def calculate_angle(x1, y1, x2, y2):
     dy = y1 - y2
     dx = x2 - x1
     angle_radians = math.atan2(dy, dx)
@@ -28,9 +28,6 @@ def calculate_angle(x1, y1, x2, y2, frame_center_x):
     
     if angle_degrees < 0:
         angle_degrees += 180
-    
-    if x2 >= frame_center_x:
-        angle_degrees = 180 - angle_degrees
     
     return int(angle_degrees)
 
@@ -88,9 +85,9 @@ def detect_curve_lane(frame):
             except Exception as e:
                 print(f"Error drawing line: {e}")
 
-        angle = calculate_angle(0, lefty, width - 1, righty, width // 2)
+        angle = calculate_angle(-width // 2, lefty, width // 2, righty)  # x축 중심을 0으로 설정
 
-        return (width // 2, (lefty + righty) // 2), line_image, angle
+        return (0, (lefty + righty) // 2), line_image, angle  # x축 중심을 기준으로 0을 반환
     else:
         return None, None, None
 
