@@ -8,7 +8,7 @@ import math
 # UDP settings
 video_receive_port = 5005  # Port number to receive video data from Raspberry Pi
 angle_send_port = 6000  # Port number to send angle data to Raspberry Pi
-pi_ip = "172.30.1.100"  # Raspberry Pi IP address (destination for sending angle data)
+pi_ip = "172.30.1.240"  # Raspberry Pi IP address (destination for sending angle data)
 
 # Create socket for receiving video data and bind it
 video_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
