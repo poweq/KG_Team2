@@ -1,4 +1,4 @@
-# raspberry_pi_camera_sender_with_arduino_no_delay.py
+# raspberry_pi_camera_sender_with_arduino_motor_control.py
 import cv2
 import socket
 import serial  # 시리얼 통신 모듈
@@ -8,9 +8,9 @@ import threading  # 스레드를 사용하여 각도 데이터 수신 병렬 처
 import time
 
 # UDP 설정
-pc_ip = "172.30.1.46"  # Windows PC의 IP 주소 (환경에 맞게 설정)
+pc_ip = "172.30.1.42"  # 심승환 PC의 IP 주소 (환경에 맞게 설정)  # 심승환 PC의 IP 주소 (환경에 맞게 설정)
 video_send_port = 5005  # Windows PC로 영상 데이터를 송신할 포트 번호
-angle_receive_port = 5007  # Windows PC로부터 각도 데이터를 수신할 포트 번호
+angle_receive_port = 6000  # Windows PC로부터 각도 데이터를 수신할 포트 번호
 
 # 아두이노 시리얼 통신 설정
 arduino_port = '/dev/ttyAMA1'  # 아두이노와 연결된 시리얼 포트
@@ -53,11 +53,14 @@ def receive_angle_data():
         try:
             # 각도 데이터 수신
             angle_data, addr = angle_receive_sock.recvfrom(1024)  # 최대 1024 바이트 크기의 데이터 수신
-            latest_angle = angle_data.decode()  # 바이트 데이터를 문자열로 변환
+            latest_angle = angle_data.decode().strip().replace('Angle: ', '')  # 바이트 데이터를 문자열로 변환하고  공백 제거
             with lock:
                 angle_data_received = True  # 데이터 수신 상태 업데이트
                 last_received_time = time.time()  # 마지막 수신 시간 갱신
-            print(f"수신된 각도 데이터: {latest_angle}")  # 수신된 각도 출력
+            angle = float(latest_angle) if latest_angle.replace('.', '', 1).isdigit() else None
+            with lock:
+                motorA, motorB, motorC, motorD = map(int, calculate_motor_values(angle) if angle is not None else (110, 110, 110, 110))
+                print(f"수신된 각도 데이터: {latest_angle}, 모터 속도 -> A: {motorA}, B: {motorB}, C: {motorC}, D: {motorD}")  # 수신된 각도 출력
         except socket.timeout:
             with lock:
                 # 타임아웃 발생 시: 각도 데이터를 수신하지 못한 경우
@@ -69,6 +72,32 @@ def receive_angle_data():
 # 각도 데이터를 수신하는 스레드 시작
 angle_thread = threading.Thread(target=receive_angle_data, daemon=True)
 angle_thread.start()
+
+# 모터 속도 계산 함수
+def calculate_motor_values(angle):
+    # Base speed for motors
+    base_speed = 110
+    max_offset = 50  # 최대 속도 조정 값
+
+    # Initialize motor speeds
+    motorA = motorB = motorC = motorD = base_speed
+
+    try:
+        angle = float(angle)
+        if angle < 90:
+            # Turn left: decrease speed of motors on the left side and increase speed on the right side
+            offset = (90 - angle) / 90 * max_offset
+            motorA = motorB = base_speed - offset  # Slow down left motors
+            motorC = motorD = base_speed + offset  # Speed up right motors
+        elif angle > 90:
+            # Turn right: increase speed of motors on the left side and decrease speed on the right side
+            offset = (angle - 90) / 90 * max_offset
+            motorA = motorB = base_speed + offset  # Speed up left motors
+            motorC = motorD = base_speed - offset  # Slow down right motors
+    except ValueError:
+        print(f"유효하지 않은 각도 값: {angle}") if not angle.replace('.', '', 1).isdigit() else None
+
+    return motorA, motorB, motorC, motorD
 
 try:
     # 메인 송신 루프 (카메라 데이터 송신 및 아두이노로의 데이터 송신)
@@ -95,12 +124,15 @@ try:
             print(f"영상 데이터 송신 중 오류 발생: {e}")
             continue
 
-        # 아두이노로 각도 데이터 송신
+        # 아두이노로 모터 제어 데이터 송신
         if ser.is_open:
             try:
                 with lock:
-                    ser.write((latest_angle + "\n").encode())  # 아두이노로 각도 데이터 전송 (줄바꿈 추가)
-                print(f"아두이노로 각도 데이터 송신: {latest_angle}")
+                    # 각도에 따라 모터 속도 계산
+                    motorA, motorB, motorC, motorD = map(int, calculate_motor_values(latest_angle))
+                    motor_command = f'a:{motorA} b:{motorB} c:{motorC} d:{motorD}\n'
+                    ser.write(motor_command.encode())  # 아두이노로 모터 제어 데이터 전송
+                print(f"아두이노로 모터 제어 데이터 송신: {motor_command}, 현재 각도: {latest_angle}")
             except Exception as e:
                 print(f"아두이노로 데이터 송신 중 오류 발생: {e}")
 
@@ -111,6 +143,14 @@ except KeyboardInterrupt:
     print("사용자에 의해 프로그램이 중단되었습니다.")
 
 finally:
+    # 모터 값을 0으로 초기화하여 아두이노로 전송
+    if ser.is_open:
+        try:
+            motor_command = 'a:0 b:0 c:0 d:0\n'
+            ser.write(motor_command.encode())
+            print(f"프로그램 종료 - 모든 모터 값을 0으로 초기화: {motor_command}")
+        except Exception as e:
+            print(f"모터 초기화 중 오류 발생: {e}")
     # 리소스 정리
     cap.release()
     video_sock.close()
