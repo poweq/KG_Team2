@@ -17,7 +17,7 @@ video_sock.bind(("0.0.0.0", video_receive_port))
 # Create socket for sending angle data
 angle_send_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-print("Waiting for video data and ready to send angle...")
+print("Waiting for video data from Raspberry Pi...")
 
 # Function to calculate lane angle
 def calculate_angle(x1, y1, x2, y2, frame_center_x):
@@ -99,10 +99,10 @@ try:
         # Receive video data
         try:
             video_data, video_addr = video_sock.recvfrom(65507)  # Maximum UDP packet size
-            video_size = struct.unpack("Q", video_data[:8])[0]   # Read the size of the data
-            video_frame_data = video_data[8:8 + video_size]      # Separate the actual video data
-            frame = pickle.loads(video_frame_data)               # Deserialize
-            frame = cv2.imdecode(frame, cv2.IMREAD_COLOR)        # Convert JPEG to OpenCV image
+            video_size = struct.unpack("Q", video_data[:8])[0]  # Read the size of the data
+            video_frame_data = video_data[8:8 + video_size]  # Separate the actual video data
+            frame = pickle.loads(video_frame_data)  # Deserialize
+            frame = cv2.imdecode(frame, cv2.IMREAD_COLOR)  # Convert JPEG to OpenCV image
         except Exception as e:
             print(f"Error receiving video: {e}")
             continue  # Keep running even if an error occurs
@@ -123,14 +123,14 @@ try:
             angle_text = f"Angle: {angle}°"
             print(f"Detected angle: {angle_text}")  # Print angle to console
 
-            # Generate image with lane and angle information
-            combined_image = cv2.addWeighted(frame, 0.8, lane_image, 1, 1)
-
             # Send angle data to Raspberry Pi
             try:
                 angle_send_sock.sendto(angle_text.encode(), (pi_ip, angle_send_port))  # Send angle data
             except Exception as e:
                 print(f"Error sending angle data: {e}")
+
+            # Generate image with lane and angle information
+            combined_image = cv2.addWeighted(frame, 0.8, lane_image, 1, 1)
 
         # Draw a virtual vertical center line
         cv2.line(combined_image, (frame_center_x, 0), (frame_center_x, height), (255, 0, 0), 2)
