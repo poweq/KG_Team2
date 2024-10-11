@@ -2,17 +2,39 @@
 import cv2
 import numpy as np
 import math
+import socket
+import pickle
+import struct
 
-cap = cv2.VideoCapture(0)
-cap.set(3, 320)
-cap.set(4, 240)
-cx = 0
-cy = 0
+# UDP settings
+video_receive_port = 5005  # Port number to receive video data from Raspberry Pi
+angle_send_port = 6000  # Port number to send angle data to Raspberry Pi
+pi_ip = "172.30.1.240"  # Raspberry Pi IP address (destination for sending angle data)
+
+# Create socket for receiving video data and bind it
+video_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+video_sock.bind(("0.0.0.0", video_receive_port))
+
+# Create socket for sending angle data
+angle_send_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+print("Waiting for video data from Raspberry Pi...")
 
 while True:
-    ret, img = cap.read()
-    if not ret:
-        break
+    try:
+        # Receive video data from Raspberry Pi
+        video_data, video_addr = video_sock.recvfrom(65507)
+        video_size = struct.unpack("Q", video_data[:8])[0]
+        video_frame_data = video_data[8:8 + video_size]
+        img = pickle.loads(video_frame_data)
+        img = cv2.imdecode(img, cv2.IMREAD_COLOR)
+
+        if img is None:
+            print("Failed to decode frame, skipping this frame.")
+            continue
+    except Exception as e:
+        print(f"Error receiving video: {e}")
+        continue
 
     height, width, _ = img.shape
     center_x = width // 2
@@ -21,7 +43,8 @@ while True:
     img_cvt = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     img_mask1 = cv2.inRange(img_cvt, np.array([0, 100, 100]), np.array([20, 255, 255]))
     img_mask2 = cv2.inRange(img_cvt, np.array([160, 100, 100]), np.array([180, 255, 255]))
-    img_mask = img_mask1 + img_mask2
+    yellow_mask = cv2.inRange(img_cvt, np.array([15, 100, 100]), np.array([35, 255, 255]))
+    img_mask = img_mask1 + img_mask2 + yellow_mask
 
     cont_list, hierachy = cv2.findContours(img_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
@@ -45,6 +68,13 @@ while True:
         # 결과 출력
         print(f"Detected angle: {angle} degrees")
 
+        # Send angle data to Raspberry Pi
+        try:
+            angle_text = f"{angle}"
+            angle_send_sock.sendto(angle_text.encode(), (pi_ip, angle_send_port))
+        except Exception as e:
+            print(f"Error sending angle data: {e}")
+
         # 외곽선과 중심점 그리기
         img_con = cv2.drawContours(img, [c], -1, (0, 0, 255), 1)
         img = cv2.circle(img, (cx, cy), 10, (0, 255, 0), -1)
@@ -61,4 +91,5 @@ while True:
         break
 
 cv2.destroyAllWindows()
-cap.release()
+video_sock.close()
+angle_send_sock.close()
