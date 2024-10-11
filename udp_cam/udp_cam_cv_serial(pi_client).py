@@ -1,4 +1,3 @@
-# raspberry_pi_camera_sender_with_arduino_motor_control.py
 import cv2
 import socket
 import serial  # 시리얼 통신 모듈
@@ -76,23 +75,27 @@ angle_thread.start()
 # 모터 속도 계산 함수
 def calculate_motor_values(angle):
     # Base speed for motors
-    base_speed = 110
-    max_offset = 50  # 최대 속도 조정 값
+    base_speed = 95
+    max_offset = 65  # 최대 속도 조정 값
 
     # Initialize motor speeds
     motorA = motorB = motorC = motorD = base_speed
+    boost = 50
 
     try:
         angle = float(angle)
-        if angle < 90:
+        if 86 <= angle <= 94:
+            # 직진: 모든 모터 속도를 동일하게 설정
+            motorA = motorB = motorC = motorD = base_speed
+        elif angle < 86:
             # Turn left: decrease speed of motors on the left side and increase speed on the right side
             offset = (90 - angle) / 90 * max_offset
             motorA = motorB = base_speed - offset  # Slow down left motors
-            motorC = motorD = base_speed + offset  # Speed up right motors
-        elif angle > 90:
+            motorC = motorD = base_speed + offset + boost  # Speed up right motors
+        elif angle > 94:
             # Turn right: increase speed of motors on the left side and decrease speed on the right side
             offset = (angle - 90) / 90 * max_offset
-            motorA = motorB = base_speed + offset  # Speed up left motors
+            motorA = motorB = base_speed + offset + boost  # Speed up left motors
             motorC = motorD = base_speed - offset  # Slow down right motors
     except ValueError:
         print(f"유효하지 않은 각도 값: {angle}") if not angle.replace('.', '', 1).isdigit() else None
