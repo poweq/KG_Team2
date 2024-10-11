@@ -1,9 +1,10 @@
-import socket
+# -*- coding:utf-8 -*-
 import cv2
 import numpy as np
+import math
+import socket
 import pickle
 import struct
-import math
 
 # UDP settings
 video_receive_port = 5005  # Port number to receive video data from Raspberry Pi
@@ -19,130 +20,76 @@ angle_send_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 print("Waiting for video data from Raspberry Pi...")
 
-# Function to calculate lane angle
-def calculate_angle(x1, y1, x2, y2):
-    dy = y2 - y1
-    dx = x1 - x2
-    angle_radians = math.atan2(dy, dx)
-    angle_degrees = math.degrees(angle_radians)
-    
-    if angle_degrees < 0:
-        angle_degrees += 180
+while True:
+    try:
+        # Receive video data from Raspberry Pi
+        video_data, video_addr = video_sock.recvfrom(65507)
+        video_size = struct.unpack("Q", video_data[:8])[0]
+        video_frame_data = video_data[8:8 + video_size]
+        img = pickle.loads(video_frame_data)
+        img = cv2.imdecode(img, cv2.IMREAD_COLOR)
 
-    return int(angle_degrees)
-
-# Function to detect lane
-def detect_curve_lane(frame):
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    white_mask = cv2.inRange(hsv, (0, 0, 200), (180, 30, 255))
-    yellow_mask = cv2.inRange(hsv, (15, 100, 100), (35, 255, 255))
-    combined_mask = cv2.bitwise_or(white_mask, yellow_mask)
-    filtered_frame = cv2.bitwise_and(frame, frame, mask=combined_mask)
-
-    gray = cv2.cvtColor(filtered_frame, cv2.COLOR_BGR2GRAY)
-    blur = cv2.GaussianBlur(gray, (7, 7), 0)
-    edges = cv2.Canny(blur, 50, 150)
-
-    height, width = edges.shape
-    mask = np.zeros_like(edges)
-    polygon = np.array([[(0, height), (width, height), 
-                         (int(width * 0.6), int(height * 0.6)), 
-                         (int(width * 0.4), int(height * 0.6))]], np.int32)
-    cv2.fillPoly(mask, polygon, 255)
-    masked_edges = cv2.bitwise_and(edges, mask)
-
-    lines = cv2.HoughLinesP(masked_edges, 1, np.pi / 180, 30, 
-                            minLineLength=30, maxLineGap=200)
-
-    if lines is None:
-        return None, None, None
-
-    points = []
-    for line in lines:
-        for x1, y1, x2, y2 in line:
-            points.append([x1, y1])
-            points.append([x2, y2])
-
-    points = np.array(points)
-    if len(points) > 0:
-        [vx, vy, x, y] = cv2.fitLine(points, cv2.DIST_L2, 0, 0.01, 0.01)
-        
-        try:
-            if vx == 0:
-                return None, None, None
-            lefty = int((-x * vy / vx) + y)
-            righty = int(((width - x) * vy / vx) + y)
-        except (ZeroDivisionError, ValueError) as e:
-            print(f"Error calculating lefty or righty: {e}")
-            return None, None, None
-
-        line_image = np.zeros_like(frame)
-        scale = 100
-        end_x = width // 2 + int(vx * scale)
-        end_y = height - int(vy * scale)
-        start_x = width // 2 - int(vx * scale)
-        start_y = height + int(vy * scale)
-        
-        try:
-            cv2.line(line_image, (start_x, start_y), (end_x, end_y), (0, 255, 0), 5)
-        except Exception as e:
-            print(f"Error drawing line: {e}")
-
-        angle = calculate_angle(width // 2, height, end_x, end_y)
-
-        return (width // 2, height), line_image, angle
-    else:
-        return None, None, None
-
-try:
-    while True:
-        try:
-            video_data, video_addr = video_sock.recvfrom(65507)
-            video_size = struct.unpack("Q", video_data[:8])[0]
-            video_frame_data = video_data[8:8 + video_size]
-            frame = pickle.loads(video_frame_data)
-            frame = cv2.imdecode(frame, cv2.IMREAD_COLOR)
-            
-            if frame is None:
-                print("Failed to decode frame, skipping this frame.")
-                continue
-        except Exception as e:
-            print(f"Error receiving video: {e}")
+        if img is None:
+            print("Failed to decode frame, skipping this frame.")
             continue
+    except Exception as e:
+        print(f"Error receiving video: {e}")
+        continue
 
-        lane_center, lane_image, angle = detect_curve_lane(frame)
-        height, width = frame.shape[:2]
-        frame_center_x = width // 2
+    height, width, _ = img.shape
+    center_x = width // 2
+    center_y = height
 
-        if lane_center is None:
-            print("Lane not found.")
-            angle_text = "Angle: N/A"
-            combined_image = frame
-        else:
-            angle_text = f"Angle: {angle}"
-            print(f"Detected angle: {angle_text}")
+    img_cvt = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    img_mask1 = cv2.inRange(img_cvt, np.array([0, 100, 100]), np.array([20, 255, 255]))
+    img_mask2 = cv2.inRange(img_cvt, np.array([160, 100, 100]), np.array([180, 255, 255]))
+    yellow_mask = cv2.inRange(img_cvt, np.array([15, 100, 100]), np.array([35, 255, 255]))
+    img_mask = img_mask1 + img_mask2 + yellow_mask
 
-            try:
-                angle_send_sock.sendto(angle_text.encode(), (pi_ip, angle_send_port))
-            except Exception as e:
-                print(f"Error sending angle data: {e}")
+    cont_list, hierachy = cv2.findContours(img_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
-            combined_image = cv2.addWeighted(frame, 0.8, lane_image, 1, 1)
+    try:
+        c = max(cont_list, key=cv2.contourArea)
+        M = cv2.moments(c)
+        cx = int(M['m10'] / M['m00'])
+        cy = int(M['m01'] / M['m00'])
 
-        cv2.line(combined_image, (frame_center_x, 0), (frame_center_x, height), (255, 0, 0), 2)
+        # 원점에서 무게중심까지 선 그리기
+        img = cv2.line(img, (center_x, center_y), (cx, cy), (255, 0, 0), 2)
 
-        cv2.putText(combined_image, angle_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        # 각도 계산 (x축 기준으로 왼쪽이 180도, 오른쪽이 0도)
+        delta_x = cx - center_x
+        delta_y = center_y - cy
+        angle = int(math.degrees(math.atan2(delta_y, delta_x)))
+        if angle < 0:
+            angle += 360
+        angle = 180 - angle
 
-        if combined_image is not None:
-            cv2.imshow("Lane Detection", combined_image)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+        # 결과 출력
+        print(f"Detected angle: {angle} degrees")
 
-except KeyboardInterrupt:
-    print("Program interrupted by user.")
+        # Send angle data to Raspberry Pi
+        try:
+            angle_text = f"{angle}"
+            angle_send_sock.sendto(angle_text.encode(), (pi_ip, angle_send_port))
+        except Exception as e:
+            print(f"Error sending angle data: {e}")
 
-finally:
-    cv2.destroyAllWindows()
-    video_sock.close()
-    angle_send_sock.close()
-    print("Program terminated successfully.")
+        # 외곽선과 중심점 그리기
+        img_con = cv2.drawContours(img, [c], -1, (0, 0, 255), 1)
+        img = cv2.circle(img, (cx, cy), 10, (0, 255, 0), -1)
+    except:
+        pass
+
+    # 화면에 x축과 y축 그리기
+    img = cv2.line(img, (0, center_y), (width, center_y), (0, 255, 255), 1)  # x축
+    img = cv2.line(img, (center_x, 0), (center_x, height), (0, 255, 255), 1)  # y축
+
+    cv2.imshow('mask', img)
+    key = cv2.waitKey(1)
+    if key & 0xff == ord('q'):
+        break
+
+cv2.destroyAllWindows()
+video_sock.close()
+angle_send_sock.close()
