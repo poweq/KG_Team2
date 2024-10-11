@@ -95,6 +95,7 @@ void loop() {
 
   // 각 모터별 엔코더 값 출력 (시리얼 플로터용)
 // 각 모터별 엔코더 값 출력 (디버깅용)
+
 Serial.print("A:");
 Serial.print(abs(encoderAPosition));  // 절대값으로 출력
 Serial.print(" B:");
@@ -105,11 +106,12 @@ Serial.print(" D:");
 Serial.println(abs(encoderDPosition)); // 절대값으로 출력
 
   delay(10);
+
 }
 
 void handleCommand(String command) {
-    Serial.print("받은 명령: ");
-    Serial.println(command); // 받은 명령어 시리얼 모니터에 출력
+    //Serial.print("받은 명령: ");
+    //Serial.println(command); // 받은 명령어 시리얼 모니터에 출력
 
     // W: 명령어 처리
     if (command.startsWith("W:")) {
@@ -127,12 +129,13 @@ void handleCommand(String command) {
     }
 
     // 모터의 방향 및 PWM 값 설정
-    setMotorDirectionAndPWM('a', motorAValue);
-    setMotorDirectionAndPWM('b', motorBValue);
-    setMotorDirectionAndPWM('c', motorCValue);
-    setMotorDirectionAndPWM('d', motorDValue);
+    setMotorDirectionAndPWM('a', motorAValue * 1.0);
+    setMotorDirectionAndPWM('b', motorBValue * 0.9999999);
+    setMotorDirectionAndPWM('c', motorCValue * 1.01);
+    setMotorDirectionAndPWM('d', motorDValue * 1.02);
 
     // 출력값을 시리얼 0번으로 출력
+   /*
     Serial.print("모터 출력: a:");
     Serial.print(motorAValue);
     Serial.print(" b:");
@@ -141,6 +144,7 @@ void handleCommand(String command) {
     Serial.print(motorCValue);
     Serial.print(" d:");
     Serial.println(motorDValue);
+    */
 }
 
 void updateMotorValue(String command, char motor, int &motorValue) {
