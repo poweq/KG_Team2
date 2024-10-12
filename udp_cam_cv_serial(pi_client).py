@@ -7,7 +7,7 @@ import threading  # 스레드를 사용하여 각도 데이터 수신 병렬 처
 import time
 
 # UDP 설정
-pc_ip = "172.30.1.42"  # 심승환 PC의 IP 주소 (환경에 맞게 설정)  # 심승환 PC의 IP 주소 (환경에 맞게 설정)
+pc_ip = "172.30.1.42"  # 수신자의 PC IP 주소 (환경에 맞게 설정)
 video_send_port = 5005  # Windows PC로 영상 데이터를 송신할 포트 번호
 angle_receive_port = 6000  # Windows PC로부터 각도 데이터를 수신할 포트 번호
 
