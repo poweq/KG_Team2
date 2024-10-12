@@ -10,8 +10,8 @@ KG 카이로스 2팀 side project
 udp_cam_cv_serial(pi_client).py<br>
 ->라즈베리파이에서 카메라로 찍은 영상 데이터를 서버(PC)로 송신<br>
 
-udp_revice_pi_opencv(pc_server).py
-->송신된 데이터를 수신후 차선의 각도를 계산해서 라즈베리파이로 수신
+udp_revice_pi_opencv(pc_server).py<br>
+->송신된 데이터를 수신후 차선의 각도를 계산해서 라즈베리파이로 수신<br>
 
 encoder_motor_controll.ino<br>
-->각도에 따른 모터 출력값 조절
+->각도에 따른 모터 출력값 조절<br>
